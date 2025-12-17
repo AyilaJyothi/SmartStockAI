@@ -1,0 +1,13 @@
+.dashboardLayout {
+  height: 100vh;
+  margin: -8px;
+  display: flex;
+  flex-direction: column;
+  background-color: #ffffff;
+}
+
+.body {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+}
