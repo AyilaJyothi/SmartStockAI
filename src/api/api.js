@@ -4,3 +4,5 @@ export const loginUser = (data) => axios.post("http://localhost:3000/api/auth/lo
 export const sendOtp = (data) => axios.post("http://localhost:3000/api/auth/send-otp", data);
 export const verifyOtp = (data) => axios.post("http://localhost:3000/api/auth/verify-otp", data);
 export const resetPassword = (data) => axios.post("http://localhost:3000/api/auth/reset-password", data);
+
+export const getProducts = () => axios.get("http://localhost:3000/api/products");

@@ -1,7 +1,8 @@
 import { useState } from "react";
 import Sidebar from "./Sidebar";
 import Topbar from "./Topbar";
-import MainContent from "./MainContent";
+// import MainContent from "./MainContent";
+import { Outlet } from "react-router-dom";
 import styles from "./DashboardCSS/Dashboard.module.css";
 
 const Dashboard = () => {
@@ -19,7 +20,8 @@ const Dashboard = () => {
       {/* Body section */}
       <div className={styles.body}>
         {sidebarOpen && <Sidebar />}
-        <MainContent />
+        <Outlet />
+        {/* <MainContent /> */}
       </div>
     </div>
   );

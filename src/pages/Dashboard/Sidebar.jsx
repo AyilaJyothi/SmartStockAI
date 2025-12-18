@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { NavLink } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBox,
@@ -16,9 +16,6 @@ import {
 import styles from "./DashboardCSS/Sidebar.module.css";
 
 const Sidebar = () => {
-  const [active, setActive] = useState("Dashboard");
-
-  // Map menu items to icons
   const iconMap = {
     "Dashboard": faBox,
     "Inventory": faWarehouse,
@@ -33,41 +30,38 @@ const Sidebar = () => {
   };
 
   const topMenu = [
-    "Dashboard",
-    "Inventory",
-    "AI – Misplaced Products",
-    "AI – Barcode Scan",
-    "Orders",
-    "Shipping",
-    "Reports"
+    { name: "Dashboard", path: "/dashboard" },
+    { name: "Inventory", path: "/dashboard/inventory" },
+    { name: "AI – Misplaced Products", path: "/dashboard/misplaced" },
+    { name: "AI – Barcode Scan", path: "/dashboard/barcode" },
+    { name: "Orders", path: "/dashboard/orders" },
+    { name: "Shipping", path: "/dashboard/shipping" },
+    { name: "Reports", path: "/dashboard/reports" }
   ];
 
   const bottomMenu = [
-    { name: "Settings" },
-    { name: "Help & Support" },
-    { name: "Log Out", danger: true }
+    { name: "Settings", path: "/dashboard/settings" },
+    { name: "Help & Support", path: "/dashboard/help" },
+    { name: "Log Out", path: "/login", danger: true }
   ];
 
   const renderMenu = (menu) =>
-    menu.map((item) => {
-      const name = typeof item === "string" ? item : item.name;
-      const danger = item.danger || false;
-
-      return (
-        <li
-          key={name}
-          onClick={() => setActive(name)}
-          className={`
-            ${styles.menuItem}
-            ${active === name ? styles.active : ""}
-            ${danger ? styles.danger : ""}
-          `}
+    menu.map(({ name, path, danger }) => (
+      <li key={name} className={styles.menuItem}>
+        <NavLink
+          to={path}
+          end={name === "Dashboard"}
+          className={({ isActive }) =>
+            `${styles.link} ${isActive ? styles.active : ""} ${
+              danger ? styles.danger : ""
+            }`
+          }
         >
           <FontAwesomeIcon icon={iconMap[name]} className={styles.icon} />
           <span>{name}</span>
-        </li>
-      );
-    });
+        </NavLink>
+      </li>
+    ));
 
   return (
     <div className={styles.sidebar}>
