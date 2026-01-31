@@ -7,13 +7,15 @@ import { loginUser } from "../../api/api";
 const Login = () => {
   const navigate = useNavigate();
 
-  const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleLogin = async () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     setError("");
 
     if (!email || !password) {
@@ -22,20 +24,22 @@ const Login = () => {
     }
 
     setLoading(true);
+
     try {
-      const response = await loginUser({ email, password });
+      const response = await loginUser({ email, password, rememberMe });
 
-      alert(response.data.message || "Login successful!");
+      if (rememberMe) {
+        localStorage.setItem("token", response.data.token);
+      } else {
+        sessionStorage.setItem("token", response.data.token);
+      }
 
-      // Save token
-      localStorage.setItem("token", response.data.token);
-
-      // ✅ Redirect to dashboard
-      navigate("/dashboard");
-
+      // ⏳ IMPORTANT: Delay navigation so Chrome can save password
+      setTimeout(() => {
+        navigate("/dashboard");
+      }, 600);
     } catch (err) {
-      console.error(err);
-      setError(err.response?.data?.message || "Login failed. Please try again.");
+      setError(err.response?.data?.message || "Login failed");
     } finally {
       setLoading(false);
     }
@@ -43,16 +47,15 @@ const Login = () => {
 
   return (
     <div className={styles.loginContainer}>
-      <img
-        src={LoginImage}
-        alt="SmartVision AI"
-        className={styles.backgroundImage}
-      />
-
+      <img src={LoginImage} alt="SmartVision AI" className={styles.backgroundImage} />
       <div className={styles.pattern}></div>
 
       <div className={styles.rightSide}>
-        <div className={styles.loginBox}>
+        <form
+          className={styles.loginBox}
+          method="POST"
+          onSubmit={handleSubmit}
+        >
           <h1 className={styles.title}>SMARTVISION AI</h1>
           <h2 className={styles.subtitle}>Login</h2>
 
@@ -62,9 +65,12 @@ const Login = () => {
             <label>Email</label>
             <input
               type="email"
+              name="username"
+              autoComplete="username"
               placeholder="Enter your email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              required
             />
           </div>
 
@@ -73,9 +79,12 @@ const Login = () => {
             <div className={styles.passwordWrapper}>
               <input
                 type={showPassword ? "text" : "password"}
+                name="password"
+                autoComplete="current-password"
                 placeholder="Enter your password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                required
               />
               <span
                 className={styles.eyeIcon}
@@ -88,9 +97,16 @@ const Login = () => {
 
           <div className={styles.options}>
             <label>
-              <input type="checkbox" /> Remember me
+              <input
+                type="checkbox"
+                checked={rememberMe}
+                onChange={(e) => setRememberMe(e.target.checked)}
+              />
+              Remember me
             </label>
+
             <button
+              type="button"
               className={styles.forgot}
               onClick={() => navigate("/forgot-password")}
             >
@@ -98,16 +114,12 @@ const Login = () => {
             </button>
           </div>
 
-          <button
-            className={styles.loginBtn}
-            onClick={handleLogin}
-            disabled={loading}
-          >
+          <button type="submit" className={styles.loginBtn} disabled={loading}>
             {loading ? "Logging in..." : "Login"}
           </button>
 
           <p className={styles.footerText}>Smart. Fast. Intelligent.</p>
-        </div>
+        </form>
       </div>
     </div>
   );

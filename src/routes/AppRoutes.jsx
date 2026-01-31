@@ -10,7 +10,7 @@ import tester from "../pages/tester";
 import DashboardHome from "../pages/Dashboard/pages/DashboardHome";
 import Inventory from "../pages/Dashboard/pages/Inventory";
 import MisplacedProducts from "../pages/Dashboard/pages/MisplacedProducts";
-import BarcodeScan from "../pages/Dashboard/pages/BarcodeScan";
+import ProductQualityCheck from "../pages/Dashboard/pages/ProductQualityCheck";
 import Orders from "../pages/Dashboard/pages/Orders";
 import Shipping from "../pages/Dashboard/pages/Shipping";
 import Reports from "../pages/Dashboard/pages/Reports";
@@ -30,7 +30,7 @@ export default function AppRoutes() {
         <Route index element={<DashboardHome />} />
         <Route path="inventory" element={<Inventory />} />
         <Route path="misplaced" element={<MisplacedProducts />} />
-        <Route path="barcode" element={<BarcodeScan />} />
+        <Route path="product-quality" element={<ProductQualityCheck />} />
         <Route path="orders" element={<Orders />} />
         <Route path="shipping" element={<Shipping />} />
         <Route path="reports" element={<Reports />} />

@@ -20,7 +20,7 @@ const Sidebar = () => {
     "Dashboard": faBox,
     "Inventory": faWarehouse,
     "AI – Misplaced Products": faBorderAll,
-    "AI – Barcode Scan": faQrcode,
+    "AI – Product Quality Check": faQrcode,
     "Orders": faCartArrowDown,
     "Shipping": faTruckFast,
     "Reports": faChartColumn,
@@ -33,7 +33,7 @@ const Sidebar = () => {
     { name: "Dashboard", path: "/dashboard" },
     { name: "Inventory", path: "/dashboard/inventory" },
     { name: "AI – Misplaced Products", path: "/dashboard/misplaced" },
-    { name: "AI – Barcode Scan", path: "/dashboard/barcode" },
+    { name: "AI – Product Quality Check", path: "/dashboard/product-quality" },
     { name: "Orders", path: "/dashboard/orders" },
     { name: "Shipping", path: "/dashboard/shipping" },
     { name: "Reports", path: "/dashboard/reports" }

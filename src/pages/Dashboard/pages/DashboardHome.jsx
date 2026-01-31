@@ -17,6 +17,9 @@ const DashboardHome = () => {
   const [categories, setCategories] = useState([]);
   const [warehouses, setWarehouses] = useState([]);
 
+  const [statuses, setStatuses] = useState([]);
+
+
   /* FILTER STATES */
   const [filterCategory, setFilterCategory] = useState("All");
   const [filterStatus, setFilterStatus] = useState("All");
@@ -58,6 +61,8 @@ const DashboardHome = () => {
         setTotalPages(res.data.totalPages);
         setCategories(res.data.categories || []);
         setWarehouses(res.data.warehouses || []);
+        console.log("FULL RESPONSE 👉", res.data.categories);
+
       } catch (err) {
         console.error("Fetch error:", err);
       } finally {
