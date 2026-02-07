@@ -1,26 +1,41 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Sidebar from "./Sidebar";
 import Topbar from "./Topbar";
 import { Outlet } from "react-router-dom";
 import styles from "./DashboardCSS/Dashboard.module.css";
+import { fetchNotifications } from  "../../api/api";
 
 const Dashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [search, setSearch] = useState(""); // ✅ ADD THIS
+  const [search, setSearch] = useState("");
+    const [notifications, setNotifications] = useState([]);
+  const token = localStorage.getItem("token");
+
+  useEffect(() => {
+    const fetch = () => {
+      if (token) fetchNotifications(token).then(setNotifications);
+    };
+
+    fetch(); // initial fetch
+    const interval = setInterval(fetch, 5000); // every 5 seconds
+    return () => clearInterval(interval); // cleanup
+  }, [token]);
+
 
   return (
     <div className={styles.dashboardLayout}>
       <Topbar
-        notifications={3}
         sidebarOpen={sidebarOpen}
         setSidebarOpen={setSidebarOpen}
-        search={search}          // ✅ PASS
-        setSearch={setSearch}    // ✅ PASS
+        search={search}
+        setSearch={setSearch}
+        notifications={notifications}
+        setNotifications={setNotifications}
       />
 
       <div className={styles.body}>
         {sidebarOpen && <Sidebar />}
-        <Outlet context={{ search }} /> {/* ✅ SHARE VIA OUTLET */}
+        <Outlet context={{ search }} />
       </div>
     </div>
   );

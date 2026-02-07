@@ -28,11 +28,14 @@ const Login = () => {
     try {
       const response = await loginUser({ email, password, rememberMe });
 
-      if (rememberMe) {
-        localStorage.setItem("token", response.data.token);
-      } else {
-        sessionStorage.setItem("token", response.data.token);
-      }
+
+      // if (rememberMe) {
+      //   localStorage.setItem("token", response.data.token);
+      // } else {
+      //   sessionStorage.setItem("token", response.data.token);
+      // }
+      sessionStorage.setItem("token", response.data.token);
+
 
       // ⏳ IMPORTANT: Delay navigation so Chrome can save password
       setTimeout(() => {

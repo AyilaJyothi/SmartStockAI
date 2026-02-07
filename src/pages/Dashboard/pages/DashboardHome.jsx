@@ -61,7 +61,6 @@ const DashboardHome = () => {
         setTotalPages(res.data.totalPages);
         setCategories(res.data.categories || []);
         setWarehouses(res.data.warehouses || []);
-        console.log("FULL RESPONSE 👉", res.data.categories);
 
       } catch (err) {
         console.error("Fetch error:", err);

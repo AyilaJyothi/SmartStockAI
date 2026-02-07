@@ -125,3 +125,36 @@
   border-radius: 50%;
   cursor: pointer;
 }
+
+.notificationDropdown {
+  position: absolute;
+  right: 20px;
+  top: 60px;
+  width: 300px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+  z-index: 100;
+  padding: 10px;
+}
+
+.notificationItem {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px;
+  border-bottom: 1px solid #eee;
+}
+
+.notificationItem:last-child {
+  border-bottom: none;
+}
+
+.deleteIcon {
+  color: red;
+  cursor: pointer;
+}
+
+.empty {
+  text-align: center;
+  color: gray;
+}
