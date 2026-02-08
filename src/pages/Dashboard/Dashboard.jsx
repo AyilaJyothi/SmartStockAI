@@ -4,6 +4,7 @@ import Topbar from "./Topbar";
 import { Outlet } from "react-router-dom";
 import styles from "./DashboardCSS/Dashboard.module.css";
 import { fetchNotifications } from  "../../api/api";
+import SmartStockChatbot from "./Chatbot/SmartStockChatbot";
 
 const Dashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -17,7 +18,7 @@ const Dashboard = () => {
     };
 
     fetch(); // initial fetch
-    const interval = setInterval(fetch, 5000); // every 5 seconds
+    const interval = setInterval(fetch, 100000); // every 5 seconds
     return () => clearInterval(interval); // cleanup
   }, [token]);
 
@@ -32,11 +33,12 @@ const Dashboard = () => {
         notifications={notifications}
         setNotifications={setNotifications}
       />
-
       <div className={styles.body}>
         {sidebarOpen && <Sidebar />}
         <Outlet context={{ search }} />
       </div>
+      <SmartStockChatbot />
+
     </div>
   );
 };
