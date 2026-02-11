@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useOutletContext } from "react-router-dom";
-import { getProducts } from "../../../api/api";
+import { getProducts ,getFilterOptions} from "../../../api/api";
 import styles from "../DashboardCSS/DashboardHome.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
@@ -59,8 +59,8 @@ const DashboardHome = () => {
 
         setProducts(res.data.products);
         setTotalPages(res.data.totalPages);
-        setCategories(res.data.categories || []);
-        setWarehouses(res.data.warehouses || []);
+        // setCategories(res.data.categories || []);
+        // setWarehouses(res.data.warehouses || []);
 
       } catch (err) {
         console.error("Fetch error:", err);
@@ -77,6 +77,23 @@ const DashboardHome = () => {
     filterWarehouse,
     currentPage,
   ]);
+
+  /* FETCH FILTER OPTIONS (ONLY ONCE) */
+useEffect(() => {
+  const fetchFilters = async () => {
+    try {
+      const res = await getFilterOptions();
+      setCategories(res.data.categories || []);
+      setWarehouses(res.data.warehouses || []);
+      setStatuses(res.data.status || []);
+    } catch (err) {
+      console.error("Filter fetch error:", err);
+    }
+  };
+
+  fetchFilters();
+}, []);
+
 
   /* RESET PAGE WHEN FILTER CHANGES */
   useEffect(() => {
@@ -131,9 +148,9 @@ const DashboardHome = () => {
             </button>
             {openDropdown === "category" && (
               <ul className={styles.dropdown}>
-                <li onClick={() => setFilterCategory("All")}>
+                {/* <li onClick={() => setFilterCategory("All")}>
                   All
-                </li>
+                </li> */}
                 {categories.map((cat) => (
                   <li
                     key={cat}
@@ -179,11 +196,11 @@ const DashboardHome = () => {
             </button>
             {openDropdown === "warehouse" && (
               <ul className={styles.dropdown}>
-                <li
+                {/* <li
                   onClick={() => setFilterWarehouse("All")}
                 >
                   All
-                </li>
+                </li> */}
                 {warehouses.map((wh) => (
                   <li
                     key={wh}
