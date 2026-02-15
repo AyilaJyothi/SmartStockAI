@@ -1,0 +1,72 @@
+.main {
+  padding: 20px;
+}
+
+.timeline {
+  border-left: 2px solid #007bff;
+  margin-left: 20px;
+  padding-left: 20px;
+}
+
+.timelineStep {
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.timelineStep::before {
+  content: '';
+  position: absolute;
+  left: -11px;
+  top: 0;
+  width: 20px;
+  height: 20px;
+  background-color: #007bff;
+  border-radius: 50%;
+}
+
+.status {
+  font-weight: bold;
+  color: #007bff;
+}
+
+.time {
+  display: block;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+
+/* Pagination */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  margin-top: 20px;
+}
+
+.pageBtn, .arrowBtn {
+  border: none;
+  background-color: #fff;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  color: #333;
+  transition: 0.3s;
+}
+
+.pageBtn:hover, .arrowBtn:hover {
+  background-color: #0d0d44;
+  color: #fff;
+}
+
+.activePage {
+  background-color: #0d0d44;
+  color: #fff;
+}
+
+.dots {
+  padding: 6px 8px;
+  color: #777;
+}

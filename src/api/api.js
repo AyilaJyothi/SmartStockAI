@@ -78,3 +78,8 @@ export const askAI = (question, token) =>
     },
     body: JSON.stringify({ question })
   }).then(res => res.json());
+
+  const ORDER_BASE = "http://localhost:3000/api/orders";
+
+export const getOrdersAPI = () => axios.get(ORDER_BASE);
+export const createOrderAPI = (data) => axios.post(ORDER_BASE, data);

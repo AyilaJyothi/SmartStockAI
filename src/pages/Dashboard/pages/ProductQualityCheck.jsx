@@ -1,19 +1,26 @@
 import { useState } from "react";
-import { useOutletContext } from "react-router-dom";
-
+import styles from "../DashboardCSS/MainContent.module.css";
 
 function ProductQualityCheck() {
   const [image, setImage] = useState(null);
-  const [result, setResult] = useState("");
+  const [preview, setPreview] = useState(null);
+  const [status, setStatus] = useState("");
+  const [resultMessage, setResultMessage] = useState("");
   const [outputImageUrl, setOutputImageUrl] = useState("");
   const [loading, setLoading] = useState(false);
-  const { addNotification } = useOutletContext(); 
-  const { setNotifications } = useOutletContext();
 
+  const BACKEND_URL = "http://localhost:3000";
 
   const handleImageChange = (e) => {
-    setImage(e.target.files[0]);
-    setResult("");
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setImage(file);
+    setPreview(URL.createObjectURL(file));
+
+    // Reset previous results
+    setStatus("");
+    setResultMessage("");
     setOutputImageUrl("");
   };
 
@@ -30,7 +37,7 @@ function ProductQualityCheck() {
 
     try {
       const res = await fetch(
-        "http://localhost:3000/api/products/quality-check",
+        `${BACKEND_URL}/api/products/quality-check`,
         {
           method: "POST",
           body: formData,
@@ -39,64 +46,84 @@ function ProductQualityCheck() {
 
       const data = await res.json();
 
-      setResult(data.message);
-      setOutputImageUrl(
-        `http://localhost:3000/${data.outputImage}`
-      );
-
-       console.log(data.status);
-      if (data.status === "NOT_OK") {
- setNotifications((prev) => [
-  {
-    id: Date.now(),
-    message: "❌ Defective product detected",
-  },
-  ...prev,
-]);
-
-}
-
+      setStatus(data.status);
+      setResultMessage(data.message);
+      setOutputImageUrl(`${BACKEND_URL}/${data.outputImage}`);
     } catch (err) {
       console.error(err);
-      setResult("❌ Error checking product");
+      setStatus("ERROR");
+      setResultMessage("❌ Error checking product");
     }
 
     setLoading(false);
   };
 
   return (
-    <div style={{ padding: "20px", maxWidth: "500px" }}>
-      <h2>Product Quality Check (AI)</h2>
+    <div className={styles.container}>
+      <h2 className={styles.heading}>AI – Product Quality Check</h2>
 
-      <input type="file" accept="image/*" onChange={handleImageChange} />
-      <br /><br />
+      {/* Upload Section */}
+      <div className={styles.uploadBox}>
+        <input type="file" accept="image/*" onChange={handleImageChange} />
 
-      <button onClick={handleSubmit} disabled={loading}>
-        {loading ? "Checking..." : "Check Product"}
-      </button>
+        {preview && (
+          <img
+            src={preview}
+            alt="Preview"
+            className={styles.previewImage}
+          />
+        )}
 
-      {result && (
-        <h3
-          style={{
-            marginTop: "20px",
-            color: result.includes("❌") ? "red" : "green",
-          }}
-        >
-          {result}
-        </h3>
+        <button onClick={handleSubmit} disabled={loading}>
+          {loading ? "🔄 Checking Product..." : "Check Product"}
+        </button>
+      </div>
+
+      {/* Status Section */}
+      {status && (
+        <div className={styles.summaryCard}>
+          <div className={styles.summaryHeader}>
+            <span>Overall Status</span>
+
+            <span
+              className={
+                status === "NOT_OK"
+                  ? styles.badgeDanger
+                  : status === "OK"
+                  ? styles.badgeSuccess
+                  : styles.badgeError
+              }
+            >
+              {status === "NOT_OK"
+                ? "DEFECTIVE"
+                : status === "OK"
+                ? "APPROVED"
+                : "ERROR"}
+            </span>
+          </div>
+
+          <div
+            className={
+              status === "NOT_OK"
+                ? styles.incorrectStatus
+                : status === "OK"
+                ? styles.correctStatus
+                : styles.errorStatus
+            }
+          >
+            {resultMessage}
+          </div>
+        </div>
       )}
 
+      {/* AI Output Image */}
       {outputImageUrl && (
-        <div style={{ marginTop: "20px" }}>
-          <h4>AI Output</h4>
+        <div className={styles.resultCard}>
+          <h3>AI Detection Output</h3>
           <img
             src={outputImageUrl}
             alt="AI Result"
-            style={{
-              width: "100%",
-              border: "2px solid #ccc",
-              borderRadius: "8px",
-            }}
+            className={styles.resultImage}
           />
         </div>
       )}

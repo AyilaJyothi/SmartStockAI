@@ -342,3 +342,12 @@
   color: #777;
   font-weight: 500;
 }
+
+
+.yearSelect {
+  margin-left: 15px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background: white;
+}

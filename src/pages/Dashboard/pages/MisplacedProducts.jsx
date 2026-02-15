@@ -1,16 +1,26 @@
 import { useState } from "react";
 import styles from "../DashboardCSS/MainContent.module.css";
-import { checkMisplaced } from "../../../api/api"; // ✅ import from api.js
+import { checkMisplaced } from "../../../api/api";
 
 const MisplacedProducts = () => {
   const [selectedImage, setSelectedImage] = useState(null);
+  const [preview, setPreview] = useState(null);
   const [resultImage, setResultImage] = useState(null);
   const [resultData, setResultData] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const BACKEND_URL = "http://localhost:3000";
 
-  const handleFileChange = (e) => setSelectedImage(e.target.files[0]);
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setSelectedImage(file);
+
+    if (file) {
+      setPreview(URL.createObjectURL(file));
+      setResultImage(null);
+      setResultData(null);
+    }
+  };
 
   const handleSubmit = async () => {
     if (!selectedImage) return alert("Please select an image");
@@ -20,7 +30,8 @@ const MisplacedProducts = () => {
 
     try {
       setLoading(true);
-      const data = await checkMisplaced(formData); // ✅ use api.js function
+      const data = await checkMisplaced(formData);
+
       setResultImage(data.image);
       setResultData(data.results);
     } catch (err) {
@@ -32,32 +43,66 @@ const MisplacedProducts = () => {
   };
 
   return (
-    <div className={styles.main}>
-      <h2>AI – Misplaced Products</h2>
+    <div className={styles.container}>
+      <h2 className={styles.heading}>AI – Misplaced Products</h2>
 
-      <input type="file" accept="image/*" onChange={handleFileChange} />
-      <button onClick={handleSubmit} disabled={loading}>
-        {loading ? "Processing..." : "Check"}
-      </button>
+      {/* Upload Section */}
+      <div className={styles.uploadBox}>
+        <input type="file" accept="image/*" onChange={handleFileChange} />
+        {preview && (
+          <img src={preview} alt="Preview" className={styles.previewImage} />
+        )}
+        <button onClick={handleSubmit} disabled={loading}>
+          {loading ? "Processing..." : "Check"}
+        </button>
+      </div>
 
+      {/* Result Section */}
       {resultImage && (
-        <div className={styles.card}>
-          <h3>Annotated Result:</h3>
+        <div className={styles.resultCard}>
+          <h3>Annotated Result</h3>
           <img
-  src={`${BACKEND_URL}${resultImage}`}
-  alt="AI Result"
-  style={{ maxWidth: "100%" }}
-/>
-
+            src={`${BACKEND_URL}${resultImage}`}
+            alt="AI Result"
+            className={styles.resultImage}
+          />
         </div>
       )}
 
+      {/* Detection Table */}
       {resultData && (
-        <div className={styles.card}>
-          <h3>Detection Data:</h3>
-          <pre>{JSON.stringify(resultData, null, 2)}</pre>
-        </div>
-      )}
+  <div className={styles.resultCard}>
+    <h3>Detection Summary</h3>
+
+    <div
+      className={
+        resultData.status === "INCORRECT"
+          ? styles.incorrectStatus
+          : styles.correctStatus
+      }
+    >
+      Overall Status: {resultData.status}
+    </div>
+
+    <div className={styles.rowSection}>
+      {resultData.messages.map((msg, index) => {
+        const isMisplaced = msg.toLowerCase().includes("misplaced");
+
+        return (
+          <div
+            key={index}
+            className={
+              isMisplaced ? styles.rowMisplaced : styles.rowCorrect
+            }
+          >
+            {msg}
+          </div>
+        );
+      })}
+    </div>
+  </div>
+)}
+
     </div>
   );
 };

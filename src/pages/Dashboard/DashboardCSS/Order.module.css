@@ -1,0 +1,157 @@
+/* Orders main wrapper */
+.main {
+  padding: 2rem;
+  background-color: #f9f9f9;
+  min-height: 100vh;
+}
+
+/* Orders Title */
+.ordersTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #222;
+  margin-bottom: 2rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Orders grid: full width cards */
+.ordersGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* Individual card */
+.card {
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  transition: transform 0.2s;
+  width: 100%; /* full width */
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+/* Card header: Order info */
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.cardHeader h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  color: #222;
+}
+
+.cardHeader p {
+  margin: 0.2rem 0;
+  color: #666;
+}
+
+.status {
+  font-weight: bold;
+  color: #007bff;
+}
+
+/* Card body: products stacked vertically */
+.cardBody {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+/* Product layout */
+.product {
+  display: flex;
+  gap: 1rem;
+  background-color: #f8f8f8;
+  padding: 1rem;
+  border-radius: 8px;
+  align-items: center;
+}
+
+.productImage {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.productInfo h4 {
+  margin: 0 0 0.3rem 0;
+  font-size: 1rem;
+  color: #333;
+}
+
+.productInfo p {
+  margin: 0.1rem 0;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+/* Card footer: totals */
+.cardFooter {
+  margin-top: 1rem;
+  border-top: 1px solid #eee;
+  padding-top: 0.5rem;
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.95rem;
+  color: #333;
+}
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  margin-top: 20px;
+}
+
+.pageBtn, .arrowBtn {
+  border: none;
+  background-color: #fff;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  color: #333;
+  transition: 0.3s;
+}
+
+.pageBtn:hover, .arrowBtn:hover {
+  background-color: #0d0d44;
+  color: #fff;
+}
+
+.activePage {
+  background-color: #0d0d44;
+  color: #fff;
+}
+
+.dots {
+  padding: 6px 8px;
+  color: #777;
+}
+.shippingBtn {
+  margin-top: 8px;
+  padding: 6px 12px;
+  border: none;
+  background-color: #0d0d44;
+  color: #fff;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: 0.3s;
+}
+
+.shippingBtn:hover {
+  background-color: #1a1aff;
+}

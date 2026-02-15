@@ -41,6 +41,7 @@ const Inventory = () => {
   const [trendType, setTrendType] = useState("yearly");
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [allProducts, setAllProducts] = useState([]);
+  const [selectedYear, setSelectedYear] = useState(null);
 
   // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
@@ -108,12 +109,19 @@ const Inventory = () => {
     }
   };
 
-  // Chart data
-  const trendData = analytics
-    ? trendType === "yearly"
-      ? analytics.yearlyTrend
-      : analytics.monthlyTrend
-    : [];
+
+useEffect(() => {
+  if (analytics?.monthlyTrend?.length > 0) {
+    setSelectedYear(analytics.monthlyTrend[0].year);
+  }
+}, [analytics]);
+
+const trendData = analytics
+  ? trendType === "yearly"
+    ? analytics.yearlyTrend
+    : analytics.monthlyTrend.find(y => y.year === selectedYear)?.months || []
+  : [];
+
 
   const pieData = analytics
     ? [
@@ -154,6 +162,14 @@ const Inventory = () => {
     return rangeWithDots;
   };
 
+  
+  useEffect(() => {
+    if (trendType === "monthly" && analytics?.monthlyTrend?.length > 0) {
+      setSelectedYear(analytics.monthlyTrend[0].year);
+    }
+  }, [trendType, analytics]);
+
+  
   return (
     <div className={styles.inventory}>
       <h2>Product Information</h2>
@@ -166,6 +182,8 @@ const Inventory = () => {
           onChange={(e) => setSku(e.target.value)}
         />
         <button onClick={handleSearch}>Search</button>
+
+        
 
         {product && (
           <Popup trigger={<button className={styles.editBtn}>Edit</button>} modal nested>
@@ -388,6 +406,23 @@ const Inventory = () => {
                     </ul>
                   )}
                 </div>
+                  {/* Year selector */}
+              {trendType === "monthly" &&
+                analytics?.monthlyTrend?.length > 0 && (
+                  <select
+                    className={styles.yearSelect}
+                    value={selectedYear || ""}
+                    onChange={(e) =>
+                      setSelectedYear(Number(e.target.value))
+                    }
+                  >
+                    {analytics.monthlyTrend.map((y) => (
+                      <option key={y.year} value={y.year}>
+                        {y.year}
+                      </option>
+                    ))}
+                  </select>
+                )}
               </div>
 
               <ResponsiveContainer width="100%" height={300}>
