@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useOutletContext } from "react-router-dom";
 import axios from "axios";
 import styles from "../DashboardCSS/Shipping.module.css";
 
 const Shipping = () => {
   const location = useLocation();
+  const { search: headerSearch = "" } = useOutletContext();
   const queryParams = new URLSearchParams(location.search);
   const orderId = queryParams.get("orderId"); // optional query param
 
@@ -33,11 +34,30 @@ const Shipping = () => {
     fetchOrders();
   }, [orderId]);
 
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [headerSearch]);
+
+  // Filter by header search (orderId, shopName, status, product titles)
+  const searchLower = (headerSearch || "").trim().toLowerCase();
+  const filteredOrders =
+    !searchLower
+      ? orders
+      : orders.filter((order) => {
+          const matchId = (order.orderId || "").toLowerCase().includes(searchLower);
+          const matchShop = (order.shopName || "").toLowerCase().includes(searchLower);
+          const matchStatus = (order.status || "").toLowerCase().includes(searchLower);
+          const matchItems = (order.items || []).some(
+            (item) => (item?.product?.Title || "").toLowerCase().includes(searchLower)
+          );
+          return matchId || matchShop || matchStatus || matchItems;
+        });
+
   // Pagination logic
-  const totalPages = Math.ceil(orders.length / ordersPerPage);
+  const totalPages = Math.ceil(filteredOrders.length / ordersPerPage);
   const indexOfLastOrder = currentPage * ordersPerPage;
   const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
-  const currentOrders = orders.slice(indexOfFirstOrder, indexOfLastOrder);
+  const currentOrders = filteredOrders.slice(indexOfFirstOrder, indexOfLastOrder);
 
   // Smart pagination numbers with "..."
   const getPaginationNumbers = () => {
@@ -66,35 +86,89 @@ const Shipping = () => {
 
   if (loading) return <div>Loading...</div>;
   if (orders.length === 0) return <div>No shipping info found.</div>;
+  if (filteredOrders.length === 0) return <div>No orders match your search.</div>;
+
+  const getProgressIndex = (order) => {
+    const statusText = (order.status || "").toLowerCase();
+    const historyText = Array.isArray(order.shippingHistory)
+      ? order.shippingHistory.map((s) => (s.status || "").toLowerCase()).join(" ")
+      : "";
+
+    if (statusText.includes("shipped") || historyText.includes("shipped")) return 2;
+    if (statusText.includes("packed") || historyText.includes("packed")) return 1;
+    return 0;
+  };
 
   return (
     <div className={styles.main}>
-      <h2>Shipping Timeline {orderId ? `- ${orderId}` : ""}</h2>
-      <div className={styles.ordersGrid}>
-        {currentOrders.map((order) => (
-          <div key={order._id} className={styles.card}>
-            <div className={styles.cardHeader}>
-              <h3>Order ID: {order.orderId}</h3>
-              <p>Shop: {order.shopName}</p>
-              <p>Status: <span className={styles.status}>{order.status}</span></p>
-            </div>
+      <h2>Shipping Details {orderId ? `- ${orderId}` : ""}</h2>
+      <div className={styles.tableWrapper}>
+        <table className={styles.table}>
+          <thead>
+            <tr>
+              <th>Order ID</th>
+              <th>Shop</th>
+              <th>Order Status</th>
+              <th>Progress</th>
+              <th>Ordered On</th>
+              <th>Total Price</th>
+              <th>Items</th>
+              <th>Shipping Status</th>
+              <th>Shipping Time</th>
+            </tr>
+          </thead>
+          <tbody>
+            {currentOrders.map((order) => {
+              const history =
+                order.shippingHistory && order.shippingHistory.length > 0
+                  ? order.shippingHistory
+                  : [{ status: "N/A", timestamp: null }];
+              const progressIndex = getProgressIndex(order);
 
-            <div className={styles.cardBody}>
-              {order.shippingHistory.map((step, idx) => (
-                <div key={idx} className={styles.product}>
-                  <div className={styles.productInfo}>
-                    <h4>{step.status}</h4>
-                    <p>Time: {new Date(step.timestamp).toLocaleString()}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <div className={styles.cardFooter}>
-              <p>Ordered on: {new Date(order.orderDate).toLocaleDateString()}</p>
-            </div>
-          </div>
-        ))}
+              return history.map((step, idx) => (
+                <tr key={`${order._id}-${idx}`}>
+                  {idx === 0 && (
+                    <>
+                      <td rowSpan={history.length}>{order.orderId}</td>
+                      <td rowSpan={history.length}>{order.shopName}</td>
+                      <td rowSpan={history.length}>
+                        <span className={styles.status}>{order.status}</span>
+                      </td>
+                      <td rowSpan={history.length}>
+                        <div className={styles.progress}>
+                          {["Ordered", "Packed", "Shipped"].map((label, stepIdx) => (
+                            <div
+                              key={label}
+                              className={`${styles.progressStep} ${
+                                stepIdx <= progressIndex ? styles.activeStep : ""
+                              }`}
+                            >
+                              <span className={styles.dot} />
+                              <span className={styles.stepLabel}>{label}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </td>
+                      <td rowSpan={history.length}>
+                        {new Date(order.orderDate).toLocaleDateString()}
+                      </td>
+                      <td rowSpan={history.length}>₹{order.totalPrice}</td>
+                      <td rowSpan={history.length}>
+                        {Array.isArray(order.items)
+                          ? order.items.map((item) => item?.product?.Title).filter(Boolean).join(", ")
+                          : "-"}
+                      </td>
+                    </>
+                  )}
+                  <td>{step.status}</td>
+                  <td>
+                    {step.timestamp ? new Date(step.timestamp).toLocaleString() : "-"}
+                  </td>
+                </tr>
+              ));
+            })}
+          </tbody>
+        </table>
       </div>
 
       {/* PAGINATION */}

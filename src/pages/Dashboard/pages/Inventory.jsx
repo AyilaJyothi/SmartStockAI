@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import { useOutletContext } from "react-router-dom";
 import Popup from "reactjs-popup";
 import "reactjs-popup/dist/index.css";
 
@@ -32,6 +33,7 @@ import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 
 const Inventory = () => {
+  const { search: headerSearch = "" } = useOutletContext();
   const [sku, setSku] = useState("");
   const [product, setProduct] = useState(null);
   const [analytics, setAnalytics] = useState(null);
@@ -40,12 +42,18 @@ const Inventory = () => {
   const [successMsg, setSuccessMsg] = useState("");
   const [trendType, setTrendType] = useState("yearly");
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const trendDropdownRef = useRef(null);
   const [allProducts, setAllProducts] = useState([]);
   const [selectedYear, setSelectedYear] = useState(null);
 
   // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 14; // Adjust number per page
+
+  // Sync header search to SKU field
+  useEffect(() => {
+    if (headerSearch.trim()) setSku(headerSearch.trim());
+  }, [headerSearch]);
 
   // Fetch all products on mount
   useEffect(() => {
@@ -116,6 +124,17 @@ useEffect(() => {
   }
 }, [analytics]);
 
+  // Close trend dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (trendDropdownRef.current && !trendDropdownRef.current.contains(e.target)) {
+        setDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
 const trendData = analytics
   ? trendType === "yearly"
     ? analytics.yearlyTrend
@@ -132,9 +151,30 @@ const trendData = analytics
 
   const toggleDropdown = () => setDropdownOpen((prev) => !prev);
 
-  // Pagination helpers
-  const totalPages = Math.ceil(allProducts.length / itemsPerPage);
-  const paginatedProducts = allProducts.slice(
+  // Header search filters inventory table items
+  const searchTerm = (headerSearch || "").trim().toLowerCase();
+  const filteredProducts =
+    !searchTerm
+      ? allProducts
+      : allProducts.filter((p) => {
+          const sku = (p.SKU || "").toLowerCase();
+          const title = (p.Title || "").toLowerCase();
+          const category = (p.Category || "").toLowerCase();
+          return (
+            sku.includes(searchTerm) ||
+            title.includes(searchTerm) ||
+            category.includes(searchTerm)
+          );
+        });
+
+  // Reset to first page when header search changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm]);
+
+  // Pagination helpers based on filtered list
+  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+  const paginatedProducts = filteredProducts.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
@@ -394,7 +434,7 @@ const trendData = analytics
             <h3 className={styles.graphTitle}>Trend Analysis</h3>
             <div className={styles.lineChartBox}>
               <div className={styles.chartFilter}>
-                <div className={styles.dropdownWrapper}>
+                <div className={styles.dropdownWrapper} ref={trendDropdownRef}>
                   <button onClick={toggleDropdown}>
                     {trendType === "yearly" ? "Yearly" : "Monthly"}{" "}
                     <FontAwesomeIcon icon={faAngleDown} />

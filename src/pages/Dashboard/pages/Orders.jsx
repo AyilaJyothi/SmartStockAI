@@ -1,11 +1,17 @@
 import { useEffect, useState } from "react";
+import { useOutletContext } from "react-router-dom";
 import styles from "../DashboardCSS/Order.module.css";
 import axios from "axios";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 
 const Orders = () => {
+  const { search: headerSearch = "" } = useOutletContext();
   const [orders, setOrders] = useState([]);
-const [currentPage, setCurrentPage] = useState(1);
-  const ordersPerPage = 1;
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [localSearch, setLocalSearch] = useState("");
+
+  // Fetch all orders once
   useEffect(() => {
     const fetchOrders = async () => {
       try {
@@ -18,112 +24,167 @@ const [currentPage, setCurrentPage] = useState(1);
     fetchOrders();
   }, []);
 
-   // Pagination logic
-  const totalPages = Math.ceil(orders.length / ordersPerPage);
-  const indexOfLastOrder = currentPage * ordersPerPage;
-  const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
-  const currentOrders = orders.slice(indexOfFirstOrder, indexOfLastOrder);
+  // Effective search term: page search bar wins, then header search
+  const searchLower = (localSearch || headerSearch || "").trim().toLowerCase();
+  const filteredOrders =
+    !searchLower
+      ? orders
+      : orders.filter((order) => {
+          const matchId = (order.orderId || "").toLowerCase().includes(searchLower);
+          const matchShop = (order.shopName || "").toLowerCase().includes(searchLower);
+          const matchStatus = (order.status || "").toLowerCase().includes(searchLower);
+          const matchItems = (order.items || []).some(
+            (item) => (item?.product?.Title || "").toLowerCase().includes(searchLower)
+          );
+          return matchId || matchShop || matchStatus || matchItems;
+        });
 
-    // For smart pagination with "..."
-  const getPaginationNumbers = () => {
-    const delta = 2;
-    const range = [];
-    const rangeWithDots = [];
-    let last;
-
-    for (let i = 1; i <= totalPages; i++) {
-      if (i === 1 || i === totalPages || (i >= currentPage - delta && i <= currentPage + delta)) {
-        range.push(i);
-      }
+  // Keep selected order in sync with filtered list
+  useEffect(() => {
+    if (filteredOrders.length === 0) {
+      setSelectedOrder(null);
+      return;
     }
 
-    for (let i of range) {
-      if (last) {
-        if (i - last === 2) rangeWithDots.push(last + 1);
-        else if (i - last !== 1) rangeWithDots.push("...");
-      }
-      rangeWithDots.push(i);
-      last = i;
+    if (!selectedOrder || !filteredOrders.some((o) => o._id === selectedOrder._id)) {
+      setSelectedOrder(filteredOrders[0]);
     }
+  }, [filteredOrders, selectedOrder]);
 
-    return rangeWithDots;
-  };
+  const formatDateTime = (value) =>
+    value ? new Date(value).toLocaleString() : "-";
 
   return (
     <div className={styles.main}>
-       <h2 className={styles.ordersTitle}>Orders</h2>
-      <div className={styles.ordersGrid}>
-        {currentOrders.map((order) => (
-          <div className={styles.card} key={order._id}>
-            <div className={styles.cardHeader}>
-              <h3>Order ID: {order.orderId}</h3>
-              <p>Shop: {order.shopName}</p>
-              <p>Status: <span className={styles.status}>{order.status}</span></p>
-            </div>
-          <div className={styles.cardBody}>
-  {order.items.map((item, index) => (
-    <div className={styles.product} key={index}>
-      <img
-        src={`http://localhost:3000/${item.product.Image}`} 
-        alt={item.product.Title}
-        className={styles.productImage}
-      />
-      <div className={styles.productInfo}>
-        <h4>{item.product.Title}</h4>
-        <p>Category: {item.product.Category}</p>
-        <p>Qty: {item.quantity}</p>
-        <p>Price: ₹{item.product.Price}</p>
-      </div>
-    </div>
-  ))}
-</div>
-
-            <div className={styles.cardFooter}>
-              <strong>Total: ₹{order.totalPrice}</strong>
-              <p>Ordered on: {new Date(order.orderDate).toLocaleDateString()}</p>
-                <button
-    className={styles.shippingBtn}
-    onClick={() => window.location.href = `/dashboard/shipping?orderId=${order.orderId}`}
-  >
-    Shipping Info
-  </button>
-            </div>
-          </div>
-        ))}
-      </div>
-      
-      {/* PAGINATION */}
-      {totalPages > 1 && (
-        <div className={styles.pagination}>
-          <button
-            className={styles.arrowBtn}
-            onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
-          >
-            &lt;
-          </button>
-
-          {getPaginationNumbers().map((num, idx) =>
-            num === "..." ? (
-              <span key={idx} className={styles.dots}>...</span>
-            ) : (
-              <button
-                key={idx}
-                className={`${styles.pageBtn} ${currentPage === num ? styles.activePage : ""}`}
-                onClick={() => setCurrentPage(num)}
-              >
-                {num}
-              </button>
-            )
-          )}
-
-          <button
-            className={styles.arrowBtn}
-            onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
-          >
-            &gt;
-          </button>
+      <div className={styles.headerRow}>
+        <h2 className={styles.ordersTitle}>Orders</h2>
+        <div className={styles.pageSearch}>
+          <FontAwesomeIcon
+            icon={faMagnifyingGlass}
+            className={styles.pageSearchIcon}
+          />
+          <input
+            type="text"
+            placeholder="Search by order, product..."
+            value={localSearch}
+            onChange={(e) => setLocalSearch(e.target.value)}
+          />
         </div>
-      )}
+      </div>
+
+      <div className={styles.layout}>
+        {/* LEFT: Orders list */}
+        <div className={styles.listPane}>
+          <div className={styles.listHeader}>
+            <span className={styles.listTitle}>Orders List</span>
+          </div>
+          {filteredOrders.length === 0 ? (
+            <p className={styles.empty}>No orders found.</p>
+          ) : (
+            filteredOrders.map((order) => (
+              <div
+                key={order._id}
+                className={`${styles.listItem} ${
+                  selectedOrder?._id === order._id ? styles.activeItem : ""
+                }`}
+                onClick={() => setSelectedOrder(order)}
+              >
+                <div className={styles.listMain}>
+                  <div>
+                    <div className={styles.listOrderId}>Order ID: {order.orderId}</div>
+                    <div className={styles.listShop}>{order.shopName}</div>
+                  </div>
+                </div>
+                <div className={styles.listMeta}>
+                  <span>{formatDateTime(order.orderDate)}</span>
+                  <span>₹{order.totalPrice}</span>
+                  <span className={styles.status}>{order.status}</span>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+
+        {/* RIGHT: Selected order details */}
+        <div className={styles.detailPane}>
+          {!selectedOrder ? (
+            <p className={styles.empty}>Select an order from the list to see details.</p>
+          ) : (
+            <div className={styles.detailCard}>
+              <div className={styles.detailHeader}>
+                <h3>Order ID: {selectedOrder.orderId}</h3>
+                <div className={styles.detailHeaderRight}>
+                  <span className={styles.status}>{selectedOrder.status}</span>
+                  <span className={styles.detailDate}>
+                    Ordered on: {formatDateTime(selectedOrder.orderDate)}
+                  </span>
+                </div>
+              </div>
+
+              <div className={styles.detailSummary}>
+                <div>
+                  <span className={styles.summaryLabel}>Shop:</span>{" "}
+                  {selectedOrder.shopName}
+                </div>
+                <div>
+                  <span className={styles.summaryLabel}>Total:</span>{" "}
+                  ₹{selectedOrder.totalPrice}
+                </div>
+              </div>
+
+              <h4 className={styles.itemsTitle}>Items</h4>
+              <div className={styles.itemsList}>
+                {(selectedOrder.items || []).map((item, idx) => (
+                  <div key={idx} className={styles.itemRow}>
+                    <div className={styles.itemMain}>
+                      {item?.product?.Image && (
+                        <img
+                          src={`http://localhost:3000/${item.product.Image}`}
+                          alt={item?.product?.Title || "Product"}
+                          className={styles.itemThumb}
+                        />
+                      )}
+                      <div className={styles.itemText}>
+                        <div className={styles.itemTitle}>
+                          {item?.product?.Title}
+                        </div>
+                        <div className={styles.itemMeta}>
+                          Category: {item?.product?.Category} · Price: ₹
+                          {item?.product?.Price}
+                        </div>
+                      </div>
+                    </div>
+                    <div className={styles.itemRight}>
+                      <div className={styles.itemQty}>Qty: {item.quantity}</div>
+                      <div className={styles.itemSubtotal}>
+                        ₹{item.quantity * (item?.product?.Price || 0)}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className={styles.detailTotalsRow}>
+                <span className={styles.summaryLabel}>Total:</span>
+                <span className={styles.detailTotalValue}>
+                  ₹{selectedOrder.totalPrice}
+                </span>
+              </div>
+
+              <div className={styles.detailFooter}>
+                <button
+                  className={styles.shippingBtn}
+                  onClick={() =>
+                    window.location.href = `/dashboard/shipping?orderId=${selectedOrder.orderId}`
+                  }
+                >
+                  View Shipping Info
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 };
