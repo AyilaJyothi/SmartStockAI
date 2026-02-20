@@ -15,7 +15,7 @@ import {
 
 import styles from "./DashboardCSS/Sidebar.module.css";
 
-const Sidebar = () => {
+const Sidebar = ({ sidebarOpen }) => {
   const iconMap = {
     "Dashboard": faBox,
     "Inventory": faWarehouse,
@@ -51,20 +51,20 @@ const Sidebar = () => {
         <NavLink
           to={path}
           end={name === "Dashboard"}
-          className={({ isActive }) =>
-            `${styles.link} ${isActive ? styles.active : ""} ${
-              danger ? styles.danger : ""
-            }`
-          }
+          className={() => `${styles.link} ${danger ? styles.danger : ""}`}
         >
-          <FontAwesomeIcon icon={iconMap[name]} className={styles.icon} />
-          <span>{name}</span>
+          {({ isActive }) => (
+            <div className={`${styles.itemBox} ${isActive ? styles.active : ""}`}>
+              <FontAwesomeIcon icon={iconMap[name]} className={styles.icon} />
+              <span>{name}</span>
+            </div>
+          )}
         </NavLink>
       </li>
     ));
 
   return (
-    <div className={styles.sidebar}>
+    <div className={`${styles.sidebar} ${!sidebarOpen ? styles.collapsed : ""}`}>
       <ul className={styles.menu}>{renderMenu(topMenu)}</ul>
       <ul className={`${styles.menu} ${styles.bottomMenu}`}>
         {renderMenu(bottomMenu)}

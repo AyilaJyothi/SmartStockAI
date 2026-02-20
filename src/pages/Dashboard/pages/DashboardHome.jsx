@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useOutletContext } from "react-router-dom";
 import { getProducts ,getFilterOptions} from "../../../api/api";
 import styles from "../DashboardCSS/DashboardHome.module.css";
@@ -9,27 +9,42 @@ const DashboardHome = () => {
   /* 🔍 SEARCH FROM TOPBAR */
   const { search = "" } = useOutletContext();
 
-  /* DATA */
-  const [products, setProducts] = useState([]);
+  /* DATA: raw list from API + filtered list used for display */
+  const [rawProducts, setRawProducts] = useState([]);
+  const [allFilteredProducts, setAllFilteredProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
   /* FILTER OPTIONS FROM BACKEND */
   const [categories, setCategories] = useState([]);
   const [warehouses, setWarehouses] = useState([]);
-
   const [statuses, setStatuses] = useState([]);
-
 
   /* FILTER STATES */
   const [filterCategory, setFilterCategory] = useState("All");
   const [filterStatus, setFilterStatus] = useState("All");
   const [filterWarehouse, setFilterWarehouse] = useState("All");
   const [openDropdown, setOpenDropdown] = useState(null);
+  const dropdownsRef = useRef(null);
+
+  /* Close dropdown when clicking outside */
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (dropdownsRef.current && !dropdownsRef.current.contains(e.target)) {
+        setOpenDropdown(null);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   /* PAGINATION */
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
   const itemsPerPage = 5;
+  const totalPages = Math.max(1, Math.ceil(allFilteredProducts.length / itemsPerPage));
+  const products = allFilteredProducts.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
   /* HELPERS */
   const toggleDropdown = (name) => {
@@ -43,40 +58,64 @@ const DashboardHome = () => {
   return "Over Stock";
 };
 
-  /* FETCH PRODUCTS (FILTERED + PAGINATED) */
+  /* FETCH PRODUCTS from API (only depends on search) */
+  const FETCH_LIMIT = 500;
   useEffect(() => {
     const fetchProducts = async () => {
       setLoading(true);
       try {
         const res = await getProducts({
           search,
-          category: filterCategory,
-          status: filterStatus,
-          warehouse: filterWarehouse,
-          page: currentPage,
-          limit: itemsPerPage,
+          limit: FETCH_LIMIT,
         });
-
-        setProducts(res.data.products);
-        setTotalPages(res.data.totalPages);
-        // setCategories(res.data.categories || []);
-        // setWarehouses(res.data.warehouses || []);
-
+        const list = res.data.products || [];
+        setRawProducts(list);
       } catch (err) {
         console.error("Fetch error:", err);
+        setRawProducts([]);
       } finally {
         setLoading(false);
       }
     };
 
     fetchProducts();
-  }, [
-    search,
-    filterCategory,
-    filterStatus,
-    filterWarehouse,
-    currentPage,
-  ]);
+  }, [search]);
+
+  /* Recompute filtered list whenever raw data or filters change */
+  useEffect(() => {
+    let list = rawProducts;
+
+    const hasSearch = (search || "").trim().length > 0;
+
+    // When searching, only filter by search (API already did that).
+    // Dropdown filters (category / status / warehouse) are ignored.
+    if (!hasSearch) {
+      // Category filter
+      if (filterCategory !== "All") {
+        list = list.filter((p) => (p.Category || "") === filterCategory);
+      }
+
+      // Warehouse filter
+      if (filterWarehouse !== "All") {
+        list = list.filter((p) => (p.Warehouse || "") === filterWarehouse);
+      }
+
+      // Status filter (derived from QTY / minStock / maxStock)
+      if (filterStatus !== "All") {
+        list = list.filter(
+          (p) =>
+            getStockStatus(
+              p.QTY,
+              p.minStock,
+              p.maxStock
+            ) === filterStatus
+        );
+      }
+    }
+
+    setAllFilteredProducts(list);
+    setCurrentPage(1);
+  }, [rawProducts, filterCategory, filterStatus, filterWarehouse, search]);
 
   /* FETCH FILTER OPTIONS (ONLY ONCE) */
 useEffect(() => {
@@ -93,12 +132,6 @@ useEffect(() => {
 
   fetchFilters();
 }, []);
-
-
-  /* RESET PAGE WHEN FILTER CHANGES */
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [search, filterCategory, filterStatus, filterWarehouse]);
 
   /* PAGINATION NUMBERS */
   const getPaginationNumbers = () => {
@@ -133,13 +166,20 @@ useEffect(() => {
   const getButtonText = (value, label) =>
     value === "All" ? label : value;
 
+  const handleClearFilters = () => {
+    setFilterCategory("All");
+    setFilterStatus("All");
+    setFilterWarehouse("All");
+    setOpenDropdown(null);
+  };
+
   return (
     <div className={styles.dashboard}>
       {/* HEADER */}
       <div className={styles.header}>
         <h2>Dashboard</h2>
 
-        <div className={styles.actions}>
+        <div className={styles.actions} ref={dropdownsRef}>
           {/* CATEGORY */}
           <div className={styles.dropdownWrapper}>
             <button onClick={() => toggleDropdown("category")}>
@@ -148,13 +188,10 @@ useEffect(() => {
             </button>
             {openDropdown === "category" && (
               <ul className={styles.dropdown}>
-                {/* <li onClick={() => setFilterCategory("All")}>
-                  All
-                </li> */}
                 {categories.map((cat) => (
                   <li
                     key={cat}
-                    onClick={() => setFilterCategory(cat)}
+                    onClick={() => { setFilterCategory(cat); setOpenDropdown(null); }}
                   >
                     {cat}
                   </li>
@@ -174,12 +211,13 @@ useEffect(() => {
                 {[
                   "All",
                   "In Stock",
+                  "Over Stock",
                   "Low Stock",
                   "Out of Stock",
                 ].map((st) => (
                   <li
                     key={st}
-                    onClick={() => setFilterStatus(st)}
+                    onClick={() => { setFilterStatus(st); setOpenDropdown(null); }}
                   >
                     {st}
                   </li>
@@ -196,15 +234,11 @@ useEffect(() => {
             </button>
             {openDropdown === "warehouse" && (
               <ul className={styles.dropdown}>
-                {/* <li
-                  onClick={() => setFilterWarehouse("All")}
-                >
-                  All
-                </li> */}
+                <li onClick={() => { setFilterWarehouse("All"); setOpenDropdown(null); }}>All</li>
                 {warehouses.map((wh) => (
                   <li
                     key={wh}
-                    onClick={() => setFilterWarehouse(wh)}
+                    onClick={() => { setFilterWarehouse(wh); setOpenDropdown(null); }}
                   >
                     {wh}
                   </li>
@@ -212,6 +246,10 @@ useEffect(() => {
               </ul>
             )}
           </div>
+
+          <button type="button" className={styles.clearBtn} onClick={handleClearFilters}>
+            Clear
+          </button>
         </div>
       </div>
 
@@ -233,11 +271,11 @@ useEffect(() => {
           </thead>
 
           <tbody>
-            {loading ? (
+            {loading && products.length === 0 ? (
               <tr>
                 <td colSpan="9">Loading...</td>
               </tr>
-            ) : products.length === 0 ? (
+            ) : !loading && products.length === 0 ? (
               <tr>
                 <td colSpan="9">No products found</td>
               </tr>

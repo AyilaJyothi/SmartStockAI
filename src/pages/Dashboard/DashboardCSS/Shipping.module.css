@@ -2,37 +2,105 @@
   padding: 20px;
 }
 
-.timeline {
-  border-left: 2px solid #007bff;
-  margin-left: 20px;
-  padding-left: 20px;
+.tableWrapper {
+  margin-top: 16px;
+  overflow-x: auto;
 }
 
-.timelineStep {
-  margin-bottom: 20px;
-  position: relative;
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
 }
 
-.timelineStep::before {
-  content: '';
-  position: absolute;
-  left: -11px;
-  top: 0;
-  width: 20px;
-  height: 20px;
-  background-color: #007bff;
-  border-radius: 50%;
+.table th,
+.table td {
+  padding: 12px 14px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+  font-size: 14px;
+  vertical-align: top;
+}
+
+.table th {
+  background: #f7f7fb;
+  font-weight: 600;
+  color: #222;
+}
+
+.table tbody tr:nth-child(even) {
+  background: #fafafd;
+}
+
+.table tbody tr:hover {
+  background: #f2f4ff;
+}
+
+.table tr:last-child td {
+  border-bottom: none;
 }
 
 .status {
-  font-weight: bold;
-  color: #007bff;
+  font-weight: 600;
+  color: #0d0d44;
+  background: rgba(13, 13, 68, 0.08);
+  padding: 3px 8px;
+  border-radius: 999px;
+  display: inline-block;
 }
 
-.time {
-  display: block;
-  font-size: 0.9rem;
-  color: #555;
+.progress {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  position: relative;
+  padding-left: 6px;
+}
+
+.progress::before {
+  content: "";
+  position: absolute;
+  left: 10px;
+  top: 8px;
+  bottom: 8px;
+  width: 2px;
+  background: #e2e5f3;
+}
+
+.progressStep {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+  z-index: 1;
+  color: #6b6f80;
+  font-size: 13px;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #c9ccda;
+  border: 2px solid #c9ccda;
+  flex: 0 0 auto;
+}
+
+.activeStep {
+  color: #0d0d44;
+  font-weight: 600;
+}
+
+.activeStep .dot {
+  background: #4ade80;
+  border-color: #4ade80;
+}
+
+.stepLabel {
+  white-space: nowrap;
 }
 
 

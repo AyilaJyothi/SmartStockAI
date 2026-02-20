@@ -72,7 +72,7 @@ const Topbar = ({ sidebarOpen, setSidebarOpen, search, setSearch, notifications,
   return (
     <div className={styles.topbar}>
       <div className={styles.left}>
-        {sidebarOpen && <h2 className={styles.logo}>SmartStock AI</h2>}
+        <h2 className={styles.logo}>SmartStock AI</h2>
 
         <div className={styles.toggleButton} onClick={() => setSidebarOpen(!sidebarOpen)}>
           <FontAwesomeIcon icon={sidebarOpen ? faAngleLeft : faAngleRight} />
@@ -99,7 +99,7 @@ const Topbar = ({ sidebarOpen, setSidebarOpen, search, setSearch, notifications,
         {showNotifications && (
           <div className={styles.notificationDropdown}>
             {notifications.length === 0 ? (
-              <p className={styles.empty}>No notifications</p>
+              <p className={styles.empty}>No Notifications</p>
             ) : (
               notifications.map(n => (
                 <div key={n._id} className={styles.notificationItem}>

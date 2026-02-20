@@ -55,14 +55,14 @@
 
 /* IMAGE */
 .imageBox img {
-  width: 250px;
-  height: 300px;
+  width: 340px;
+  height: 346px;
   object-fit: cover;
   border-radius: 12px;
 }
 .detailsBox {
-  width: 300px;
-   height: 265px;
+  width: 317px;
+  height: 300px;
   padding: 20px;
   border-radius: 12px;
 }
@@ -71,7 +71,7 @@
 .detailsPieBox {
   border:1px solid black;
   width: 480px;
-  height: 310px;
+  height: 350px;
   gap: 20px;
 }
 
@@ -250,9 +250,9 @@
 /* GRID OF ALL PRODUCTS */
 .allProductsGrid {
   display: grid;
-  /* border:2px solid black; */
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 15px;
+  /* 7 items per row on desktop */
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 10px;
   margin-top: 20px;
 }
 
