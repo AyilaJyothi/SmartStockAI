@@ -4,70 +4,78 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleLeft, faAngleRight, faMagnifyingGlass, faUser, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { faBell } from "@fortawesome/free-regular-svg-icons";
 import { deleteNotification, fetchNotifications } from "../../api/api";
-import { toast } from "react-toastify";
+// import { toast } from "react-toastify";
 
 const Topbar = ({ sidebarOpen, setSidebarOpen, search, setSearch, notifications, setNotifications }) => {
   const [showNotifications, setShowNotifications] = useState(false);
   const token = sessionStorage.getItem("token");
 
-  const seenRef = useRef({}); // track seen notifications without causing re-renders
+  // const seenRef = useRef({}); // track seen notifications without causing re-renders
 
   // ===== Fetch notifications once on mount =====
-  useEffect(() => {
-    if (!token) return;
+ useEffect(() => {
+  if (!token) return;
 
-    const getNotifications = async () => {
+  const getNotifications = async () => {
+    try {
       const data = await fetchNotifications(token);
-      console.log("Backend notifications fetched:", data);
       setNotifications(data);
-      // reset seenRef to avoid showing phantom old notifications
-      seenRef.current = {};
-    };
-
-    getNotifications();
-  }, [token, setNotifications]);
-
-  // ===== Handle bell click =====
-  const handleBellClick = async () => {
-    setShowNotifications(!showNotifications);
-
-    if (!showNotifications) { // only when opening dropdown
-      if (!token) return;
-
-      try {
-        const latestNotifications = await fetchNotifications(token);
-        console.log("Notifications to show on bell click:", latestNotifications);
-
-        // Show toasts only for unseen notifications
-        latestNotifications.forEach(n => {
-          if (!seenRef.current[n._id]) {
-            if (n.type === "DEFECT") toast.error(n.message);
-            else toast.info(n.message);
-            seenRef.current[n._id] = true;
-          }
-        });
-
-        // Update notifications state to latest
-        setNotifications(latestNotifications);
-
-      } catch (err) {
-        console.error("Failed to fetch notifications on bell click:", err);
-      }
+    } catch (err) {
+      console.error("Failed to fetch notifications:", err);
     }
   };
 
-  const handleDelete = async (id) => {
+  // 🔹 Initial fetch
+  getNotifications();
+
+  // 🔹 Poll every 5 seconds
+  const interval = setInterval(() => {
+    getNotifications();
+  }, 5000);
+
+  return () => clearInterval(interval);
+
+}, [token, setNotifications]);
+
+  // ===== Handle bell click =====
+ const handleBellClick = async () => {
+  setShowNotifications(!showNotifications);
+
+  if (!showNotifications) {
     if (!token) return;
 
     try {
-      await deleteNotification(id, token);
-      setNotifications(prev => prev.filter(n => n._id !== id));
-      delete seenRef.current[id]; // remove from seen
-      toast.success("Notification deleted");
+      const latestNotifications = await fetchNotifications(token);
+      setNotifications(latestNotifications);
     } catch (err) {
-      toast.error(err.message || "Failed to delete notification");
+      console.error("Failed to fetch notifications:", err);
+    }
+  }
+};
+
+ const handleDelete = async (id) => {
+  if (!token) return;
+
+  try {
+    await deleteNotification(id, token);
+    setNotifications(prev => prev.filter(n => n._id !== id));
+  } catch (err) {
+    console.error("Delete failed:", err);
+  }
+};
+
+  const dropdownRef = useRef(null);
+
+useEffect(() => {
+  const handleClickOutside = (e) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+      setShowNotifications(false);
     }
   };
+
+  document.addEventListener("mousedown", handleClickOutside);
+  return () => document.removeEventListener("mousedown", handleClickOutside);
+}, []);
 
   return (
     <div className={styles.topbar}>
@@ -91,29 +99,36 @@ const Topbar = ({ sidebarOpen, setSidebarOpen, search, setSearch, notifications,
       </div>
 
       <div className={styles.right}>
-        <div className={styles.notification} onClick={handleBellClick}>
-          <FontAwesomeIcon icon={faBell} />
-          {notifications.length > 0 && <span className={styles.badge}>{notifications.length}</span>}
-        </div>
+        {/* Notification Wrapper */}
+  <div className={styles.notificationWrapper} ref={dropdownRef}>
+    
+    <div className={styles.notification} onClick={handleBellClick}>
+      <FontAwesomeIcon icon={faBell} />
+      {notifications.length > 0 && (
+        <span className={styles.badge}>{notifications.length}</span>
+      )}
+    </div>
 
-        {showNotifications && (
-          <div className={styles.notificationDropdown}>
-            {notifications.length === 0 ? (
-              <p className={styles.empty}>No Notifications</p>
-            ) : (
-              notifications.map(n => (
-                <div key={n._id} className={styles.notificationItem}>
-                  <span>{n.message}</span>
-                  <FontAwesomeIcon
-                    icon={faTrash}
-                    onClick={() => handleDelete(n._id)}
-                    className={styles.deleteIcon}
-                  />
-                </div>
-              ))
-            )}
-          </div>
+    {showNotifications && (
+      <div className={styles.notificationDropdown}>
+        {notifications.length === 0 ? (
+          <p className={styles.empty}>No Notifications</p>
+        ) : (
+          notifications.map(n => (
+            <div key={n._id} className={styles.notificationItem}>
+              <span>{n.message}</span>
+              <FontAwesomeIcon
+                icon={faTrash}
+                onClick={() => handleDelete(n._id)}
+                className={styles.deleteIcon}
+              />
+            </div>
+          ))
         )}
+      </div>
+    )}
+
+  </div>
 
         <span className={styles.user}>
           <FontAwesomeIcon icon={faUser} />

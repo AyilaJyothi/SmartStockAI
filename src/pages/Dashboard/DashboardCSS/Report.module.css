@@ -23,7 +23,7 @@
 }
 
 .card {
-  flex: 1 1 200px;
+  flex: 0 0 200px;
   background-color: #fff;
   padding: 1.5rem;
   border-radius: 12px;

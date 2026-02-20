@@ -119,7 +119,7 @@ const Reports = () => {
 
   return (
     <div className={styles.main}>
-      <h2>Reports Dashboard</h2>
+      <h2 className={styles.mainTitle}>Reports Dashboard</h2>
 
       {/* Summary Cards */}
       <div className={styles.summaryCards}>

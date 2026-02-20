@@ -12,7 +12,7 @@ const Shipping = () => {
   const [orders, setOrders] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
-  const ordersPerPage = 2; // same as Orders page
+  const ordersPerPage = 3; // same as Orders page
 
   useEffect(() => {
     const fetchOrders = async () => {
