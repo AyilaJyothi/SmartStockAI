@@ -9,7 +9,7 @@ const MisplacedProducts = () => {
   const [resultData, setResultData] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const BACKEND_URL = "http://localhost:3000";
+  const BACKEND_URL = "https://smartstockaibackend.onrender.com";
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
