@@ -1,12 +1,12 @@
 import axios from "axios";
 
-const BASE_URL = "http://localhost:3000/api/products";
+const BASE_URL = "https://smartstockaibackend.onrender.com/api/products";
 
 // Auth APIs
-export const loginUser = (data) => axios.post("http://localhost:3000/api/auth/login", data);
-export const sendOtp = (data) => axios.post("http://localhost:3000/api/auth/send-otp", data);
-export const verifyOtp = (data) => axios.post("http://localhost:3000/api/auth/verify-otp", data);
-export const resetPassword = (data) => axios.post("http://localhost:3000/api/auth/reset-password", data);
+export const loginUser = (data) => axios.post("https://smartstockaibackend.onrender.com/api/auth/login", data);
+export const sendOtp = (data) => axios.post("https://smartstockaibackend.onrender.com/api/auth/send-otp", data);
+export const verifyOtp = (data) => axios.post("https://smartstockaibackend.onrender.com/api/auth/verify-otp", data);
+export const resetPassword = (data) => axios.post("https://smartstockaibackend.onrender.com/api/auth/reset-password", data);
 
 // Product APIs
 export const getProducts = (params) => axios.get(BASE_URL, { params });
@@ -70,7 +70,7 @@ export const checkMisplaced = async (formData) => {
 
 
 export const askAI = (question, token) =>
-  fetch("http://localhost:3000/api/ai/chat", {
+  fetch("https://smartstockaibackend.onrender.com/api/ai/chat", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -79,7 +79,7 @@ export const askAI = (question, token) =>
     body: JSON.stringify({ question })
   }).then(res => res.json());
 
-  const ORDER_BASE = "http://localhost:3000/api/orders";
+  const ORDER_BASE = "https://smartstockaibackend.onrender.com/api/orders";
 
 export const getOrdersAPI = () => axios.get(ORDER_BASE);
 export const createOrderAPI = (data) => axios.post(ORDER_BASE, data);
