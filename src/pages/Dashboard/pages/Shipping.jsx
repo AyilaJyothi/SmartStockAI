@@ -17,7 +17,7 @@ const Shipping = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const res = await axios.get("http://localhost:3000/api/products/orders");
+        const res = await axios.get("https://smartstockaibackend.onrender.com/api/products/orders");
         let data = res.data;
 
         if (orderId) {
