@@ -36,7 +36,7 @@ const Topbar = ({
 
     const fetchProfile = async () => {
       try {
-        const res = await fetch("http://localhost:3000/api/auth/profile", {
+        const res = await fetch("https://smartstockaibackend.onrender.com/api/auth/profile", {
           headers: { Authorization: `Bearer ${token}` }
         });
         const data = await res.json();
@@ -60,7 +60,7 @@ const Topbar = ({
     formData.append("profileImage", file);
 
     try {
-      const res = await fetch("http://localhost:3000/api/auth/profile", {
+      const res = await fetch("https://smartstockaibackend.onrender.com/api/auth/profile", {
         method: "PUT",
         headers: { Authorization: `Bearer ${token}` },
         body: formData
@@ -219,7 +219,7 @@ const Topbar = ({
           >
             {profileData?.profileImage ? (
               <img
-                src={`http://localhost:3000${profileData.profileImage}`}
+                src={`https://smartstockaibackend.onrender.com${profileData.profileImage}`}
                 alt="profile"
                 className={styles.avatar}
               />
@@ -234,7 +234,7 @@ const Topbar = ({
                 <img
                   src={
                     profileData.profileImage
-                      ? `http://localhost:3000${profileData.profileImage}`
+                      ? `https://smartstockaibackend.onrender.com${profileData.profileImage}`
                       : "https://via.placeholder.com/80"
                   }
                   alt="profile"
