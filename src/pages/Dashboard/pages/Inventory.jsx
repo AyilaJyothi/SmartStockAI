@@ -342,7 +342,7 @@ const trendData = analytics
                   handleSearch();
                 }}
               >
-                <img src={`http://localhost:3000${p.Image}`} alt={p.Title} />
+                <img src={`https://smartstockaibackend.onrender.com${p.Image}`} alt={p.Title} />
                 <p><b>{p.SKU}</b></p>
                 <p>{p.Title}</p>
               </div>
@@ -393,7 +393,7 @@ const trendData = analytics
           <div className={styles.topRow}>
             <div className={styles.imBdmB}>
               <div className={styles.imageBox}>
-                <img src={`http://localhost:3000${product.Image}`} alt={product.Title} />
+                <img src={`https://smartstockaibackend.onrender.com${product.Image}`} alt={product.Title} />
               </div>
 
               <div className={styles.detailsBox}>
