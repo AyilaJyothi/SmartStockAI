@@ -15,7 +15,7 @@ const Orders = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const res = await axios.get("http://localhost:3000/api/products/orders");
+        const res = await axios.get("https://smartstockaibackend.onrender.com/api/products/orders");
         setOrders(res.data);
       } catch (err) {
         console.error(err);
@@ -139,7 +139,7 @@ const Orders = () => {
                     <div className={styles.itemMain}>
                       {item?.product?.Image && (
                         <img
-                          src={`http://localhost:3000/${item.product.Image}`}
+                          src={`https://smartstockaibackend.onrender.com/${item.product.Image}`}
                           alt={item?.product?.Title || "Product"}
                           className={styles.itemThumb}
                         />
