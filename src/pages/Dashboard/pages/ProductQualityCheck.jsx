@@ -48,7 +48,7 @@ function ProductQualityCheck() {
 
       setStatus(data.status);
       setResultMessage(data.message);
-      setOutputImageUrl(`${BACKEND_URL}/${data.outputImage}`);
+      setOutputImageUrl(data.outputImage);
     } catch (err) {
       console.error(err);
       setStatus("ERROR");
