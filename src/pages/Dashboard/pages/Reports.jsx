@@ -54,7 +54,6 @@ const Reports = () => {
         setLoading(false);
       }
     };
-    fetchOrders();
   }, []);
 
   const searchLower = (headerSearch || "").trim().toLowerCase();
