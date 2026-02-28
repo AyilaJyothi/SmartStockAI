@@ -44,7 +44,7 @@ const Reports = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const res = await axios.get("http://localhost:3000/api/products/orders");
+        const res = await axios.get("https://smartstockaibackend.onrender.com/api/products/orders");
         setOrders(res.data);
       } catch (err) {
         console.error(err);
@@ -154,12 +154,7 @@ const Reports = () => {
 
   return (
     <div className={styles.main}>
-      <header className={styles.header}>
-        <h1 className={styles.title}>Reports Dashboard</h1>
-        <p className={styles.subtitle}>
-          Comprehensive view of supply chain performance and AI insights.
-        </p>
-      </header>
+      <h2 className={styles.mainTitle}>Reports Dashboard</h2>
 
       <div className={styles.summaryCards}>
         {kpiCards.map((card, idx) => (

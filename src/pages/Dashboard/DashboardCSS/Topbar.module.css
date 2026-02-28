@@ -2,151 +2,124 @@
   height: 64px;
   background: #0d0d44;
   color: white;
-
   display: flex;
   align-items: center;
   justify-content: space-between;
-
   padding: 0 24px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-
-  position: sticky; /* ✅ */
-  top: 0;            /* ✅ */
-  z-index: 999;     
+  position: sticky;
+  top: 0;
+  z-index: 999;
 }
 
-/* Left section: logo, toggle button, search */
 .left {
   display: flex;
   align-items: center;
   gap: 16px;
 }
 
-/* Logo styling */
 .logo {
-    font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-  font-size: 30px;
+  font-size: 26px;
   font-weight: 700;
-  margin-right: 50px;
+  margin-right: 40px;
 }
 
-/* Toggle button */
 .toggleButton {
-  width: 32px;
-  height: 32px;
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.15);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: 0.2s ease;
 }
 
 .toggleButton:hover {
-  background: rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.3);
 }
 
-.toggleButton i {
-  font-size: 16px;
-  color: white;
+.searchWrapper {
+  position: relative;
 }
 
-/* Search input */
 .searchInput {
   background: rgba(255, 255, 255, 0.12);
   border: none;
   outline: none;
-  padding: 8px 12px;
-  border-radius: 6px;
+  padding: 8px 40px 8px 12px;
+  border-radius: 8px;
   color: white;
-  font-size: 14px;
   width: 240px;
-  transition: all 0.2s ease;
 }
 
 .searchInput::placeholder {
   color: rgba(255, 255, 255, 0.7);
 }
 
-.searchInput:focus {
-  background: rgba(255, 255, 255, 0.25);
-}
-
-/* Magnifying glass icon next to search */
 .searchIcon {
-  margin-left: -40px;
-  cursor: pointer;
-  color: white;
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
-/* Right section */
 .right {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 20px;
 }
 
-/* Notification bell */
+/* Notifications */
+
+.notificationWrapper {
+  position: relative;
+}
+
 .notification {
   position: relative;
   cursor: pointer;
-}
-
-.notification i {
   font-size: 20px;
-  opacity: 0.85;
-  transition: opacity 0.2s ease;
-}
-
-.notification i:hover {
-  opacity: 1;
 }
 
 .badge {
   position: absolute;
   top: -6px;
   right: -6px;
-  background: rgb(10, 237, 10);
-  color: white;
+  background: #00ff87;
+  color: black;
   font-size: 10px;
   font-weight: bold;
-  padding: 2px 6px;
+  padding: 3px 6px;
   border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* User icon */
-.user {
-  background: rgba(255, 255, 255, 0.15);
-  padding: 8px;
-  border-radius: 50%;
-  cursor: pointer;
 }
 
 .notificationDropdown {
   position: absolute;
-  right: 20px;
-  top: 60px;
-  width: 300px;
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-  z-index: 100;
-  padding: 10px;
+  right: 0;
+  top: 45px;
+  width: 320px;
+  max-height: 400px;
+  overflow-y: auto;
+  background: white;
+  color: black;
+  border-radius: 12px;
+  padding: 12px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
 }
 
 .notificationItem {
   display: flex;
   justify-content: space-between;
-  padding: 8px;
-  border-bottom: 1px solid #eee;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 6px;
+  background: #f4f6ff;
 }
 
-.notificationItem:last-child {
-  border-bottom: none;
+.notificationItem:hover {
+  background: #e9ecff;
 }
 
 .deleteIcon {
@@ -157,4 +130,64 @@
 .empty {
   text-align: center;
   color: gray;
+}
+
+/* Profile */
+
+.profileWrapper {
+  position: relative;
+}
+
+.user {
+  cursor: pointer;
+  font-size: 20px;
+}
+
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #00ff87;
+}
+
+.profileDropdown {
+  position: absolute;
+  right: 0;
+  top: 50px;
+  width: 280px;
+  background: white;
+  color: black;
+  padding: 18px;
+  border-radius: 14px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+}
+
+.profileHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.profileImage {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.role {
+  margin-bottom: 12px;
+  font-size: 13px;
+}
+
+.uploadLabel {
+  display: block;
+  background: linear-gradient(135deg, #00ff87, #00c853);
+  color: black;
+  padding: 8px;
+  text-align: center;
+  border-radius: 8px;
+  cursor: pointer;
 }

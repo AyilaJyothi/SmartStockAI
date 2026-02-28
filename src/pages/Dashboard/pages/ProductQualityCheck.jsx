@@ -9,7 +9,7 @@ function ProductQualityCheck() {
   const [outputImageUrl, setOutputImageUrl] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const BACKEND_URL = "http://localhost:3000";
+  const BACKEND_URL = "https://smartstockaibackend.onrender.com";
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -48,7 +48,7 @@ function ProductQualityCheck() {
 
       setStatus(data.status);
       setResultMessage(data.message);
-      setOutputImageUrl(`${BACKEND_URL}/${data.outputImage}`);
+      setOutputImageUrl(data.outputImage);
     } catch (err) {
       console.error(err);
       setStatus("ERROR");

@@ -234,7 +234,7 @@ useEffect(() => {
             </button>
             {openDropdown === "warehouse" && (
               <ul className={styles.dropdown}>
-                 {warehouses.map((wh) => (
+                {warehouses.map((wh) => (
                   <li
                     key={wh}
                     onClick={() => { setFilterWarehouse(wh); setOpenDropdown(null); }}
@@ -284,7 +284,7 @@ useEffect(() => {
                   <td>{p.SKU}</td>
                   <td>
                     <img
-                      src={`http://localhost:3000${p.Image}`}
+                      src={`https://smartstockaibackend.onrender.com${p.Image}`}
                       alt={p.Title}
                     />
                   </td>

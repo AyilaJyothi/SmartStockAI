@@ -42,8 +42,9 @@
 }
 
 .card {
-  background: #fff;
-  padding: 1.25rem;
+  flex: 0 0 200px;
+  background-color: #fff;
+  padding: 1.5rem;
   border-radius: 12px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 }
