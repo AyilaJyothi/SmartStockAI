@@ -9,7 +9,12 @@ import {
   faTrash
 } from "@fortawesome/free-solid-svg-icons";
 import { faBell } from "@fortawesome/free-regular-svg-icons";
-import { deleteNotification, fetchNotifications } from "../../api/api";
+import {
+  deleteNotification,
+  fetchNotifications,
+  getProfileAPI,
+  updateProfileImageAPI
+} from "../../api/api";
 
 const Topbar = ({
   sidebarOpen,
@@ -36,10 +41,7 @@ const Topbar = ({
 
     const fetchProfile = async () => {
       try {
-        const res = await fetch("https://smartstockaibackend.onrender.com/api/auth/profile", {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        const data = await res.json();
+        const data = await getProfileAPI(token);
         setProfileData(data);
       } catch (err) {
         console.error("Profile load failed");
@@ -60,13 +62,7 @@ const Topbar = ({
     formData.append("profileImage", file);
 
     try {
-      const res = await fetch("https://smartstockaibackend.onrender.com/api/auth/profile", {
-        method: "PUT",
-        headers: { Authorization: `Bearer ${token}` },
-        body: formData
-      });
-
-      const data = await res.json();
+      const data = await updateProfileImageAPI(formData, token);
       setProfileData(data);
     } catch (err) {
       console.error("Upload failed");
@@ -219,7 +215,7 @@ const Topbar = ({
           >
             {profileData?.profileImage ? (
               <img
-                src={`https://smartstockaibackend.onrender.com${profileData.profileImage}`}
+                src={`${import.meta.env.VITE_BACKEND_URL}${profileData.profileImage}`}
                 alt="profile"
                 className={styles.avatar}
               />
@@ -234,7 +230,7 @@ const Topbar = ({
                 <img
                   src={
                     profileData.profileImage
-                      ? `https://smartstockaibackend.onrender.com${profileData.profileImage}`
+                        ? `${import.meta.env.VITE_BACKEND_URL}${profileData.profileImage}`
                       : "https://via.placeholder.com/80"
                   }
                   alt="profile"

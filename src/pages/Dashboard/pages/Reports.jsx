@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import styles from "../DashboardCSS/Report.module.css";
-import axios from "axios";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -13,6 +12,7 @@ import {
   PointElement,
 } from "chart.js";
 import { Bar, Line } from "react-chartjs-2";
+import { getOrdersAPI } from "../../../api/api";
 
 ChartJS.register(
   CategoryScale,
@@ -33,7 +33,7 @@ const Reports = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const res = await axios.get("https://smartstockaibackend.onrender.com/api/products/orders");
+        const res = await getOrdersAPI();
         setOrders(res.data);
         setLoading(false);
       } catch (err) {

@@ -33,6 +33,7 @@ import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 
 const Inventory = () => {
+  const API_BASE = import.meta.env.VITE_BACKEND_URL;
   const { search: headerSearch = "" } = useOutletContext();
   const [sku, setSku] = useState("");
   const [product, setProduct] = useState(null);
@@ -342,7 +343,7 @@ const trendData = analytics
                   handleSearch();
                 }}
               >
-                <img src={`https://smartstockaibackend.onrender.com${p.Image}`} alt={p.Title} />
+                <img src={`${API_BASE}{p.Image}`} alt={p.Title} />
                 <p><b>{p.SKU}</b></p>
                 <p>{p.Title}</p>
               </div>
@@ -393,7 +394,7 @@ const trendData = analytics
           <div className={styles.topRow}>
             <div className={styles.imBdmB}>
               <div className={styles.imageBox}>
-                <img src={`https://smartstockaibackend.onrender.com${product.Image}`} alt={product.Title} />
+                <img src={`${API_BASE}${product.Image}`} alt={product.Title} />
               </div>
 
               <div className={styles.detailsBox}>
