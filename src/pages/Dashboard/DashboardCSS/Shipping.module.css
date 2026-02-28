@@ -81,8 +81,8 @@
 }
 
 .dot {
-  width: 10px;
-  height: 10px;
+  width: 5px;
+  height: 5px;
   border-radius: 50%;
   background: #c9ccda;
   border: 2px solid #c9ccda;

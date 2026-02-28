@@ -234,8 +234,7 @@ useEffect(() => {
             </button>
             {openDropdown === "warehouse" && (
               <ul className={styles.dropdown}>
-                <li onClick={() => { setFilterWarehouse("All"); setOpenDropdown(null); }}>All</li>
-                {warehouses.map((wh) => (
+                 {warehouses.map((wh) => (
                   <li
                     key={wh}
                     onClick={() => { setFilterWarehouse(wh); setOpenDropdown(null); }}

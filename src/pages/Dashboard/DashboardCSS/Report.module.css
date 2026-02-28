@@ -1,59 +1,259 @@
+/* Report.module.css – full width of content area */
 .main {
-  padding: 2rem;
-  background-color: #f9f9f9;
+  flex: 1;
+  min-width: 0;
+  width: 100%;
+  padding: 2rem 1rem;
+  background-color: #f3f4f6;
   min-height: 100vh;
+  box-sizing: border-box;
 }
 
-/* Page title */
-.mainTitle {
-  font-size: 1.8rem;
+.loading {
+  padding: 2rem;
+  text-align: center;
+  color: #6b7280;
+}
+
+/* Header */
+.header {
+  margin-bottom: 1.5rem;
+}
+
+.title {
+  font-size: 1.75rem;
   font-weight: 700;
-  color: #222;
-  margin-bottom: 2rem;
-  text-transform: uppercase;
-  letter-spacing: 1px;
+  color: #111827;
+  margin: 0 0 0.25rem 0;
 }
 
-/* Summary cards container */
+.subtitle {
+  font-size: 0.9rem;
+  color: #6b7280;
+  margin: 0;
+}
+
+/* Summary cards - one row, full width */
 .summaryCards {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1.5rem;
-  margin-bottom: 2rem;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 1.5rem;
 }
 
 .card {
-  flex: 1 1 200px;
-  background-color: #fff;
-  padding: 1.5rem;
+  background: #fff;
+  padding: 1.25rem;
   border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  text-align: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
-.card h3 {
-  margin: 0;
+.cardTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.75rem;
+}
+
+.cardIcon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: #0d0d44;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-size: 1.1rem;
-  color: #333;
 }
 
-.card p {
+.trend {
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.trendUp {
+  color: #10b981;
+}
+
+.trendDown {
+  color: #ef4444;
+}
+
+.trendStable {
+  color: #f59e0b;
+}
+
+.cardLabel {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #6b7280;
+  letter-spacing: 0.05em;
+  margin: 0 0 0.25rem 0;
+  text-transform: uppercase;
+}
+
+.cardValue {
   font-size: 1.5rem;
   font-weight: 700;
-  margin-top: 0.5rem;
+  color: #111827;
+  margin: 0;
+}
+
+/* Two panels row – Orders by Status narrower, Revenue Over Time wider */
+.panels {
+  display: grid;
+  grid-template-columns: 0.7fr 1.3fr;
+  gap: 1.25rem;
+}
+
+.panel {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.panelHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.panelTitle {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+}
+
+.panelMenu {
+  background: none;
+  border: none;
+  color: #6b7280;
+  cursor: pointer;
+  padding: 0.25rem;
+}
+
+.dropdownWrap {
+  display: flex;
+  align-items: center;
+}
+
+.dropdownBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.4rem 0.6rem;
+  font-size: 0.8rem;
+  color: #6b7280;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.chartWrap {
+  height: 220px;
+  margin-bottom: 1rem;
+}
+
+.legend {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.8rem;
+  color: #6b7280;
+  margin-bottom: 0.75rem;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.legendItem i {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  display: inline-block;
+}
+
+.efficiency {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.efficiencyLabel {
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+.efficiencyValue {
+  font-size: 0.95rem;
+  font-weight: 700;
   color: #0d0d44;
 }
 
-/* Charts container */
-.charts {
+.revenueSummary {
   display: flex;
-  flex-direction: column;
-  gap: 2rem;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid #f3f4f6;
 }
 
-.chartCard {
-  background-color: #fff;
-  padding: 1rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+.revenueSummary > div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.revenueLabel {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #6b7280;
+  letter-spacing: 0.04em;
+}
+
+.revenueAmount {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.growthUp {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #10b981;
+}
+
+/* Top Selling Products – full width below the two panels */
+.topSellingSection {
+  margin-top: 1.25rem;
+}
+
+.topSellingSection .chartWrap {
+  height: 260px;
+}
+
+@media (max-width: 1024px) {
+  .summaryCards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .panels {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .summaryCards {
+    grid-template-columns: 1fr;
+  }
 }
