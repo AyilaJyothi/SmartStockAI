@@ -9,5 +9,13 @@
   .body {
     flex: 1;
     display: flex;
-    /* overflow: hidden; */
+    min-height: 0;
+  }
+
+  .content {
+    flex: 1;
+    min-width: 0;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
   }

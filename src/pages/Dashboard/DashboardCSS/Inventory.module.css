@@ -2,6 +2,9 @@
   padding: 20px;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
 }
 
 /* SEARCH */
@@ -43,34 +46,44 @@
   gap: 20px;
   flex-wrap: wrap;
   align-items: flex-start;
+  min-width: 0;
 }
-.imBdmB
-{
+.imBdmB {
   background-color: #f5f5f5;
-
   border: 1px solid black;
   display: flex;
   flex-direction: row;
+  min-width: 0;
+  max-width: 100%;
 }
 
 /* IMAGE */
+.imageBox {
+  min-width: 0;
+}
 .imageBox img {
   width: 340px;
+  max-width: 100%;
   height: 346px;
   object-fit: cover;
   border-radius: 12px;
 }
 .detailsBox {
   width: 317px;
+  max-width: 100%;
+  min-width: 0;
   height: 300px;
   padding: 20px;
   border-radius: 12px;
+  box-sizing: border-box;
 }
 
 /* DETAILS + PIE WRAPPER */
 .detailsPieBox {
-  border:1px solid black;
+  border: 1px solid black;
   width: 480px;
+  max-width: 100%;
+  min-width: 0;
   height: 350px;
   gap: 20px;
 }
@@ -93,16 +106,19 @@
 
 /* BOTTOM ROW: LINE CHART */
 .bottomRow {
-  border: 1px solid black;
+  border: 1px solid #0a0a0a;
   margin-top: 30px;
+  max-width: 100%;
+  min-width: 0;
 }
 
 .lineChartBox {
-  flex: 0 0 70%;
+  max-width: 100%;
   background: #fff;
   padding: 15px;
   border-radius: 12px;
   box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+  box-sizing: border-box;
 }
 
 .chartFilter {
