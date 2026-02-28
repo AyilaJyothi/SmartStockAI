@@ -9,7 +9,7 @@ const MisplacedProducts = () => {
   const [resultData, setResultData] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const BACKEND_URL = "https://smartstockaibackend.onrender.com";
+  const API_BASE = import.meta.env.VITE_BACKEND_URL;
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -62,7 +62,7 @@ const MisplacedProducts = () => {
         <div className={styles.resultCard}>
           <h3>Annotated Result</h3>
           <img
-            src={`${BACKEND_URL}${resultImage}`}
+            src={`${API_BASE}${resultImage}`}
             alt="AI Result"
             className={styles.resultImage}
           />

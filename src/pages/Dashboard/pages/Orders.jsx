@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import styles from "../DashboardCSS/Order.module.css";
-import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
+import { getOrdersAPI, API_BASE } from "../../../api/api";
 
 const Orders = () => {
   const { search: headerSearch = "" } = useOutletContext();
@@ -15,8 +15,8 @@ const Orders = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const res = await axios.get("https://smartstockaibackend.onrender.com/api/products/orders");
-        setOrders(res.data);
+          const res = await getOrdersAPI();
+          setOrders(res.data);
       } catch (err) {
         console.error(err);
       }
@@ -139,7 +139,7 @@ const Orders = () => {
                     <div className={styles.itemMain}>
                       {item?.product?.Image && (
                         <img
-                          src={`https://smartstockaibackend.onrender.com/${item.product.Image}`}
+                            src={`${API_BASE}/${item.product.Image}`}
                           alt={item?.product?.Title || "Product"}
                           className={styles.itemThumb}
                         />

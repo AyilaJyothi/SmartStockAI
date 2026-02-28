@@ -6,6 +6,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
 
 const DashboardHome = () => {
+
+  const API_BASE = import.meta.env.VITE_BACKEND_URL;
   /* 🔍 SEARCH FROM TOPBAR */
   const { search = "" } = useOutletContext();
 
@@ -284,7 +286,7 @@ useEffect(() => {
                   <td>{p.SKU}</td>
                   <td>
                     <img
-                      src={`https://smartstockaibackend.onrender.com${p.Image}`}
+                      src={`${API_BASE}${p.Image}`}
                       alt={p.Title}
                     />
                   </td>

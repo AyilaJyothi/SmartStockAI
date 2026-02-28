@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useLocation, useOutletContext } from "react-router-dom";
-import axios from "axios";
 import styles from "../DashboardCSS/Shipping.module.css";
+import { getOrdersAPI } from "../../../api/api";
 
 const Shipping = () => {
   const location = useLocation();
@@ -17,7 +17,7 @@ const Shipping = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const res = await axios.get("https://smartstockaibackend.onrender.com/api/products/orders");
+        const res = await getOrdersAPI();
         let data = res.data;
 
         if (orderId) {

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import styles from "../DashboardCSS/MainContent.module.css";
+import { qualityCheckAPI, API_BASE } from "../../../api/api";
 
 function ProductQualityCheck() {
   const [image, setImage] = useState(null);
@@ -9,7 +10,6 @@ function ProductQualityCheck() {
   const [outputImageUrl, setOutputImageUrl] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const BACKEND_URL = "https://smartstockaibackend.onrender.com";
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -36,19 +36,12 @@ function ProductQualityCheck() {
     setLoading(true);
 
     try {
-      const res = await fetch(
-        `${BACKEND_URL}/api/products/quality-check`,
-        {
-          method: "POST",
-          body: formData,
-        }
-      );
-
-      const data = await res.json();
+      const res = await qualityCheckAPI(formData);
+      const data = res.data;
 
       setStatus(data.status);
       setResultMessage(data.message);
-      setOutputImageUrl(data.outputImage);
+      setOutputImageUrl(`${API_BASE}${data.outputImage}`);
     } catch (err) {
       console.error(err);
       setStatus("ERROR");
