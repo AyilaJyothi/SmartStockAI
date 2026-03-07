@@ -1,15 +1,12 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./Login.module.css";
-import LoginImage from "../../assets/LoginImage.png";
 import { loginUser } from "../../api/api";
 
 const Login = () => {
   const navigate = useNavigate();
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -24,20 +21,10 @@ const Login = () => {
     }
 
     setLoading(true);
-
     try {
       const response = await loginUser({ email, password, rememberMe });
-
-
-      // if (rememberMe) {
-      //   localStorage.setItem("token", response.data.token);
-      // } else {
-      //   sessionStorage.setItem("token", response.data.token);
-      // }
       sessionStorage.setItem("token", response.data.token);
 
-
-      // ⏳ IMPORTANT: Delay navigation so Chrome can save password
       setTimeout(() => {
         navigate("/dashboard");
       }, 600);
@@ -49,18 +36,43 @@ const Login = () => {
   };
 
   return (
-    <div className={styles.loginContainer}>
-      <img src={LoginImage} alt="SmartVision AI" className={styles.backgroundImage} />
-      <div className={styles.pattern}></div>
+    <div className={`${styles.loginContainer} ${styles.loginSplitContainer}`}>
+      <section className={styles.leftPanel}>
+        <div className={styles.leftOverlay} />
+        <div className={styles.brand}>SmartVision AI</div>
+        <div className={styles.leftContent}>
+          <h1 className={styles.heroHeading}>
+            Precision
+            <br />
+            Warehouse
+            <br />
+            Intelligence.
+          </h1>
+          <p className={styles.heroText}>
+            Optimize your inventory with AI-driven demand forecasting, real-time stock monitoring,
+            and automated anomaly detection.
+          </p>
+          <div className={styles.statsRow}>
+            <div className={styles.statCard}>
+              <strong>100%</strong>
+              <span>REAL-TIME SYNC</span>
+            </div>
+            <div className={styles.statCard}>
+              <strong>1.2M+</strong>
+              <span>PRODUCTS TRACKED</span>
+            </div>
+            <div className={styles.statCard}>
+              <strong>99.98%</strong>
+              <span>ACCURACY RATE</span>
+            </div>
+          </div>
+        </div>
+      </section>
 
-      <div className={styles.rightSide}>
-        <form
-          className={styles.loginBox}
-          method="POST"
-          onSubmit={handleSubmit}
-        >
-          <h1 className={styles.title}>SMARTVISION AI</h1>
-          <h2 className={styles.subtitle}>Login</h2>
+      <section className={styles.rightPanel}>
+        <form className={styles.loginBox} onSubmit={handleSubmit}>
+          <h2 className={styles.title}>Welcome to SmartVision AI</h2>
+          <p className={styles.subtitle}>Please enter your credentials to access the dashboard.</p>
 
           {error && <p className={styles.error}>{error}</p>}
 
@@ -68,8 +80,6 @@ const Login = () => {
             <label>Email</label>
             <input
               type="email"
-              name="username"
-              autoComplete="username"
               placeholder="Enter your email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -79,23 +89,13 @@ const Login = () => {
 
           <div className={styles.inputGroup}>
             <label>Password</label>
-            <div className={styles.passwordWrapper}>
-              <input
-                type={showPassword ? "text" : "password"}
-                name="password"
-                autoComplete="current-password"
-                placeholder="Enter your password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-              <span
-                className={styles.eyeIcon}
-                onClick={() => setShowPassword(!showPassword)}
-              >
-                👁
-              </span>
-            </div>
+            <input
+              type="password"
+              placeholder="Enter your password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
           </div>
 
           <div className={styles.options}>
@@ -104,15 +104,10 @@ const Login = () => {
                 type="checkbox"
                 checked={rememberMe}
                 onChange={(e) => setRememberMe(e.target.checked)}
-              />
+              />{" "}
               Remember me
             </label>
-
-            <button
-              type="button"
-              className={styles.forgot}
-              onClick={() => navigate("/forgot-password")}
-            >
+            <button type="button" className={styles.forgot} onClick={() => navigate("/forgot-password")}>
               Forgot password?
             </button>
           </div>
@@ -120,10 +115,8 @@ const Login = () => {
           <button type="submit" className={styles.loginBtn} disabled={loading}>
             {loading ? "Logging in..." : "Login"}
           </button>
-
-          <p className={styles.footerText}>Smart. Fast. Intelligent.</p>
         </form>
-      </div>
+      </section>
     </div>
   );
 };

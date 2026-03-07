@@ -6,7 +6,7 @@
   justify-content: space-between;
   align-items: center;
   box-shadow: 0px 2px 10px rgba(0,0,0,0.08);
-  border: 0.1px #c3d1f5 solid;
+  border: none;
   position: sticky;
   top: 0;
   z-index: 100;

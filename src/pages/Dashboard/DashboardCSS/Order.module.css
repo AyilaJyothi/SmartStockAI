@@ -1,9 +1,11 @@
 /* Orders main wrapper */
 .main {
+  flex: 1;
+  width: 100%;
+  min-width: 0;
   padding: 2rem 1rem;   /* uniform padding */
   background-color: #f9f9f9;
   min-height: 100vh;
-  width: 79%;
   box-sizing: border-box;
 }
 /* Orders Title */
@@ -20,6 +22,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
   margin-bottom: 1.25rem;
 }
 
@@ -37,7 +41,8 @@
   background: transparent;
   outline: none;
   font-size: 0.85rem;
-  min-width: 220px;
+  min-width: 180px;
+  width: 100%;
 }
 
 .pageSearchIcon {
@@ -48,7 +53,7 @@
 /* Two-column layout */
 .layout {
   display: grid;
-  grid-template-columns: 1fr 1.5fr;  /* right side slightly bigger */
+  grid-template-columns: minmax(300px, 350px) minmax(0, 0.9fr);
   gap: 1rem;
   width: 100%;
 }
@@ -60,6 +65,9 @@
   box-shadow: 0 4px 12px rgba(0,0,0,0.08);
   padding: 1rem;
   max-height: 70vh;
+  min-width: 0;
+  max-width: 4500px;
+  justify-self: start;
   overflow-y: auto;
 }
 
@@ -91,10 +99,6 @@
 
 .listItem + .listItem {
   margin-top: 0.5rem;
-}
-
-.listItem:hover {
-  /* background: #f3f4ff; */
 }
 
 .activeItem {
@@ -139,6 +143,7 @@
   padding: 1.25rem 1.5rem;
   min-height: 320px;
   width: 100%;
+  min-width: 0;
 }
 
 .detailCard {

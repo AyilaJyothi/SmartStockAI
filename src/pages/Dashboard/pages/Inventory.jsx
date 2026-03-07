@@ -343,7 +343,7 @@ const trendData = analytics
                   handleSearch();
                 }}
               >
-                <img src={`${API_BASE}{p.Image}`} alt={p.Title} />
+                <img src={`${API_BASE}${p.Image}`} alt={p.Title} />
                 <p><b>{p.SKU}</b></p>
                 <p>{p.Title}</p>
               </div>

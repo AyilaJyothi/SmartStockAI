@@ -35,7 +35,9 @@ const Dashboard = () => {
       />
       <div className={styles.body}>
         <Sidebar sidebarOpen={sidebarOpen} />
-        <Outlet context={{ search }} />
+        <div className={styles.contentArea}>
+          <Outlet context={{ search }} />
+        </div>
       </div>
       <SmartStockChatbot />
 

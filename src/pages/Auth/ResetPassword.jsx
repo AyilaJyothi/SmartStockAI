@@ -1,7 +1,6 @@
 import { useState } from "react";
 import styles from "./Login.module.css";
 import { resetPassword } from "../../api/api";
-import LoginImage from "../../assets/LoginImage.png";
 
 const ResetPassword = () => {
   const urlParams = new URLSearchParams(window.location.search);
@@ -30,25 +29,66 @@ const ResetPassword = () => {
   };
 
   return (
-    <div className={styles.loginContainer}>
-        <img src={LoginImage} alt="SmartVision AI" className={styles.backgroundImage} />
-      <div className={styles.rightSide}>
+    <div className={`${styles.loginContainer} ${styles.loginSplitContainer}`}>
+      <section className={styles.leftPanel}>
+        <div className={styles.leftOverlay} />
+        <div className={styles.brand}>SmartVision AI</div>
+        <div className={styles.leftContent}>
+          <h1 className={styles.heroHeading}>
+            Precision
+            <br />
+            Warehouse
+            <br />
+            Intelligence.
+          </h1>
+          <p className={styles.heroText}>
+            Optimize your inventory with AI-driven demand forecasting, real-time stock monitoring,
+            and automated anomaly detection.
+          </p>
+          <div className={styles.statsRow}>
+            <div className={styles.statCard}>
+              <strong>100%</strong>
+              <span>REAL-TIME SYNC</span>
+            </div>
+            <div className={styles.statCard}>
+              <strong>1.2M+</strong>
+              <span>PRODUCTS TRACKED</span>
+            </div>
+            <div className={styles.statCard}>
+              <strong>99.98%</strong>
+              <span>ACCURACY RATE</span>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section className={styles.rightPanel}>
         <div className={styles.loginBox}>
-          <h2 className={styles.subtitle}>Reset Password</h2>
+          <h2 className={styles.title}>Reset Password</h2>
+          <p className={styles.subtitle}>Set your new password to continue.</p>
           {error && <p className={styles.error}>{error}</p>}
           <div className={styles.inputGroup}>
             <label>New Password</label>
-            <input type="password" placeholder="Enter new password" value={newPassword} onChange={e => setNewPassword(e.target.value)} />
+            <input
+              type="password"
+              placeholder="Enter new password"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+            />
           </div>
           <div className={styles.inputGroup}>
             <label>Confirm Password</label>
-            <input type="password" placeholder="Confirm new password" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} />
+            <input
+              type="password"
+              placeholder="Confirm new password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+            />
           </div>
           <button className={styles.loginBtn} onClick={handleResetPassword} disabled={loading}>
             {loading ? "Resetting..." : "Reset Password"}
           </button>
         </div>
-      </div>
+      </section>
     </div>
   );
 };
